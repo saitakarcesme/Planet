@@ -40,6 +40,6 @@ summary['distinct_request_texts']=len(prompts)
 (out/'acceptance-summary.json').write_text(json.dumps(summary, indent=2)+'\n')
 (out/'oracle-corrections.json').write_text(json.dumps(corrections,indent=2)+'\n')
 with (out/'acceptance-cases.csv').open('w') as f:
-    writer=csv.DictWriter(f,fieldnames=['run','case','category','functional_pass','wall_seconds'])
+    writer=csv.DictWriter(f,fieldnames=['run','case','category','functional_pass','wall_seconds'],lineterminator='\n')
     writer.writeheader();writer.writerows(rows)
 print(json.dumps({k:summary[k] for k in ('total_attempts','total_functional_passes')}))
