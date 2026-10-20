@@ -1,0 +1,104 @@
+Planet — native application follow-up, 20 October 2026
+
+LATEST ACCEPTANCE
+  Personal Spotify Liked Songs playback: 3/3
+  Writer new plain-text documents:       2/2
+  Representative core desktop tasks:    11/11
+  Unit/regression checks:               38/38
+  Particle geometry:                   passed at 48 and 60 px
+
+  These 16 acceptance cases combine the non-playlist cases from
+  native-verified-01 with the final spotify-verified-final run. They ran against
+  the final application source. The independent playlist oracle was refined
+  afterwards to read a scrolled-away collection header; the three playlist
+  requests were then rerun successfully. This is not another full 118-case run.
+
+SPOTIFY PROOF
+  H2O routed the request; Qwen selected native controls observed through AT-SPI.
+  No request-to-keyboard-shortcut, playlist URL or song-name action recipe was
+  added. The planner chose different tracks itself, using the actual library
+  and track controls. The native desktop client remained the execution target.
+
+  The acceptance oracle separately checked:
+  - The current collection's owner matches its entry in the user's library.
+  - The current page contains the expected track table and is not marked Public
+    Playlist. Matching the words "Liked Songs" alone does not pass.
+  - The actual playing track appears in that collection's table, not merely
+    the player footer; its track ID differs from the pre-task selection.
+  - MPRIS reports Playing for the chosen title, with a stable track ID and
+    advancing playback position. Final progress samples advanced by
+    401,000, 401,000 and 403,000 microseconds.
+
+  The final three end-to-end requests took 30.011, 27.618 and 31.398 seconds,
+  including model planning and verification. These are individual measurements,
+  not a general latency guarantee. Requests included English and Turkish.
+
+ROOT CAUSES AND FIXES
+  - The old native-tree reader stopped at depth 9; the relevant CEF controls
+    were deeper. Bounded traversal now reaches them and retains region/table
+    ancestry while excluding offscreen action targets and password fields.
+  - A PyGObject interface-name collision resolved text reads to the wrong
+    method. Text reads now call the explicit AT-SPI Text interface.
+  - NO_AT_BRIDGE inherited from the desktop session disabled GTK accessibility.
+    Planet removes it from newly launched applications.
+  - Spotify requires its Chromium accessibility flag on this machine. An opt-in
+    setup helper creates a local desktop-manifest override, preserving the
+    packaged launcher. A normal quit/relaunch through the installed application
+    catalog verified the flag and native controls. Session accessibility is on.
+  - Contextual UI snapshots are compacted into bounded tables for the local
+    model; older snapshots retain only small summaries. Large views can be
+    inspected by label/region instead of exceeding the 16k model context.
+  - The completion assessor receives initial selection context and retains the
+    latest UI evidence after media polling. It must interpret "another item
+    from a collection" as a different item within that collection.
+  - A generic read-only media wait checks delayed playback transitions.
+    A generic saved-text verifier checks actual requested file content.
+  - Uppercase shortcut spelling such as Ctrl+Shift+S is normalized correctly.
+    Startup focus is polled without repeatedly spawning an application.
+  - Button-only accessibility trees still receive OCR supplementation, so
+    custom-drawn calculator results are not lost when buttons become readable.
+
+WRITER AND CORE CHECKS
+  The final two Writer tasks created new documents, entered distinct requested
+  text, selected plain-text format, saved to fresh paths and verified the saved
+  contents. Independent disk reads also confirmed those contents. No existing
+  document was overwritten. Earlier test-created unsaved drafts were discarded
+  during the controlled accessibility restart; the existing saved fixture was
+  preserved.
+
+  The 11 representative core cases covered app focus, real calculator input and
+  readout, existing/missing-folder search, fresh-folder creation, native file
+  manager navigation, playback, track metadata, answer-only generation, unknown
+  apps, and create/open/list. Folder mutation cases used fresh fixture paths.
+
+EXPLORATORY RECORD
+  This follow-up completed 43 real-model task attempts: 34 passed their recorded
+  checks and 9 did not. Earlier failures remain recorded, rather than being
+  overwritten by successful reruns:
+  - 3 context-overflow failures.
+  - 2 step-limit failures (early music planning and the calculator readout).
+  - 1 test required the planner itself to call the media wait, although the
+    actual track changed. The final oracle measures progress independently.
+  - 3 tests could not verify ownership because the collection header had been
+    scrolled above the viewport. The final oracle reads that header directly
+    from the current native accessibility page without activating hidden
+    controls or changing playback. All three requests passed on rerun.
+
+  This follow-up is separate from the historical 222-attempt baseline in
+  VALIDATION-2026-10-20.txt. Unit tests and manual diagnostics are not included
+  in the 43 real-model attempts.
+
+LIMITS AND CURRENT STATE
+  These checks establish the tested account/app workflows, not arbitrary UI
+  reliability. Other app versions, inaccessible/custom controls, logged-out
+  accounts, concurrent remote playback changes and unrelated document formats
+  can still need further work. The app remains a local desktop prototype.
+
+  Music trials were muted; playback was paused before restoring its original
+  volume. Planet is idle with the conversation collapsed. Model services and
+  existing shortcuts remain in place; no new model or autostart was installed.
+  Native accessibility support persists in the local Spotify launcher.
+
+  native-followup-2026-10-20.json contains sanitized per-case outcomes, timings,
+  tool names and postcondition flags. Raw prompts, personal library metadata,
+  document paths and native UI/model traces remain in ignored local evidence.

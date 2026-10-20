@@ -94,6 +94,16 @@ class ControllerTests(unittest.TestCase):
             c.confirm_completion('Opened your personal collection.','Liked Songs')
         c.call.assert_not_called()
 
+    def test_completion_retains_collection_context_after_media_polling(self):
+        c = self.controller()
+        c.confirm_completion = Controller.confirm_completion.__get__(c)
+        c.trace = [{'kind': 'tool', 'name': 'observe', 'arguments': {}, 'result': {
+            'elements': [{'id': 'a1:0', 'role': 'table', 'name': 'Personal collection', 'context': ['library: Mine']}]
+        }}] + [{'kind': 'tool', 'name': 'media_status', 'arguments': {}, 'result': {'state': 'Playing'}} for _ in range(5)]
+        c.call = Mock(return_value=tool('assess_outcome', supported=True, reason='Verified.'))
+        c.confirm_completion('Playing.', 'Playing')
+        self.assertIn('Personal collection', c.call.call_args.args[0][1]['content'])
+
     def test_parallel_calls_do_not_execute(self):
         c = self.controller()
         multiple = tool('launch', app_id='different.desktop')
@@ -157,6 +167,28 @@ class DesktopBoundaryTests(unittest.TestCase):
             self.d.media_control('org.mpris.MediaPlayer2.invented', 'Play')
         bus.assert_not_called()
 
+    def test_media_wait_requires_chosen_title_and_advancing_playback(self):
+        self.d.players = {'player': {}}
+        def status(title, position):
+            return {'players': [{'player': 'player', 'title': title, 'state': 'Playing',
+                                 'track_id': '/track/chosen' if title == 'Chosen' else '/track/old',
+                                 'position_us': position}]}
+        with patch.object(self.d, 'media_status', side_effect=[
+            status('Old', 900000), status('Chosen', 0), status('Chosen', 400000)
+        ]), patch.object(self.d, 'bus_call') as mutation, patch('scripts.desktop.time.sleep'):
+            result = self.d.wait_for_media('player', 'Chosen', 'Playing', 3)
+        self.assertTrue(result['verified'])
+        self.assertEqual(result['position_advanced_us'], 400000)
+        mutation.assert_not_called()
+
+    def test_media_wait_does_not_accept_wrong_track_or_stationary_position(self):
+        self.d.players = {'player': {}}
+        status = {'players': [{'player': 'player', 'title': 'Chosen', 'state': 'Playing',
+                               'track_id': '/track/chosen', 'position_us': 0}]}
+        with patch.object(self.d, 'media_status', return_value=status), patch('scripts.desktop.time.sleep'), \
+             patch('scripts.desktop.time.monotonic', side_effect=[0, 0, 2]):
+            self.assertFalse(self.d.wait_for_media('player', 'Chosen', 'Playing', 1)['verified'])
+
     def test_unreadable_search_is_not_reported_as_complete(self):
         def walk(path, followlinks, onerror):
             onerror(PermissionError('private directory'))
@@ -177,6 +209,26 @@ class DesktopBoundaryTests(unittest.TestCase):
             self.d.type_text('0x1','A note: Günlük','')
         self.assertEqual(x11.call_args.args[0][-1],'A note: Günlük')
         wayland.assert_not_called()
+
+    def test_conventional_uppercase_shortcut_spelling(self):
+        with patch.object(self.d, 'guard', return_value={'xwayland': True}), \
+             patch.object(self.d, 'after_input'), patch.object(self.d, 'x11') as x11, \
+             patch('scripts.desktop.time.sleep'):
+            self.d.keys('0x1', 'Ctrl+Shift+S')
+        self.assertEqual(x11.call_args.args[0][-1], 'ctrl+shift+s')
+
+    def test_saved_file_verification_checks_content_not_just_filename(self):
+        import tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory(dir=Path.home()) as folder:
+            path = Path(folder)/'result.txt'
+            path.write_text('\ufeffRequested line\r\n', encoding='utf-8')
+            self.assertTrue(self.d.verify_text_file(str(path), 'Requested line')['verified'])
+            self.assertFalse(self.d.verify_text_file(str(path), 'Different line')['verified'])
+            self.assertFalse(self.d.verify_text_file(str(path.with_name('missing.txt')), 'Requested line')['verified'])
+            self.assertNotIn('content', self.d.verify_text_file(str(path), 'Requested line'))
+            path.write_text('Requested line\n\n')
+            self.assertFalse(self.d.verify_text_file(str(path), 'Requested line')['verified'])
 
 
 if __name__ == '__main__': unittest.main()

@@ -1,5 +1,10 @@
 Planet — live desktop validation, 20 October 2026
 
+HISTORICAL BASELINE
+  The later NATIVE-FOLLOWUP-2026-10-20.txt report documents fixes and new passing
+  trials for the personal Spotify collection and Writer failures recorded below.
+  These original counts and findings are retained as historical evidence.
+
 RESULT
   222 completed real-model task attempts, covering 116 distinct request texts.
   195 passed their functional checks; 27 did not. These totals deliberately

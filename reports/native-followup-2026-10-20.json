@@ -1,0 +1,645 @@
+{
+  "attempts": 43,
+  "passed": 34,
+  "failed": 9,
+  "latest_acceptance": {
+    "attempts": 16,
+    "passed": 16,
+    "runs": [
+      "native-verified-01 (non-playlist cases)",
+      "spotify-verified-final"
+    ]
+  },
+  "unit_tests": 38,
+  "normal_spotify_launcher_accessibility_verified": true,
+  "cases": [
+    {
+      "run": "spotify-native-01",
+      "id": "spotify-personal-01",
+      "category": "music_playlist",
+      "pass": false,
+      "seconds": 14.197,
+      "tools": []
+    },
+    {
+      "run": "spotify-native-02",
+      "id": "spotify-personal-01",
+      "category": "music_playlist",
+      "pass": false,
+      "seconds": 4.476,
+      "tools": []
+    },
+    {
+      "run": "spotify-native-03",
+      "id": "spotify-personal-01",
+      "category": "music_playlist",
+      "pass": false,
+      "seconds": 42.905,
+      "tools": [
+        "media_status",
+        "observe",
+        "click",
+        "click",
+        "media_status",
+        "click",
+        "media_status",
+        "media_control",
+        "media_control",
+        "media_status",
+        "media_control"
+      ],
+      "playing": true,
+      "track_observed": false,
+      "track_changed": true
+    },
+    {
+      "run": "spotify-native-04",
+      "id": "spotify-personal-01",
+      "category": "music_playlist",
+      "pass": true,
+      "seconds": 30.47,
+      "tools": [
+        "media_status",
+        "observe",
+        "click",
+        "wait_for_media"
+      ],
+      "playing": true,
+      "personal_collection_verified": true,
+      "track_observed": true,
+      "track_changed": true,
+      "playback_progress_verified": true
+    },
+    {
+      "run": "writer-native-01",
+      "id": "writer-native-01",
+      "category": "document",
+      "pass": true,
+      "seconds": 54.294,
+      "tools": [
+        "observe",
+        "type_text",
+        "observe",
+        "click",
+        "click",
+        "click",
+        "type_text",
+        "click",
+        "click",
+        "click",
+        "observe",
+        "click",
+        "find_files"
+      ],
+      "saved_file_exists": true,
+      "expected_text_found": true
+    },
+    {
+      "run": "native-final-01",
+      "id": "spotify-native-final-1",
+      "category": "music_playlist",
+      "pass": true,
+      "seconds": 36.947,
+      "tools": [
+        "media_status",
+        "observe",
+        "click",
+        "click",
+        "wait_for_media"
+      ],
+      "playing": true,
+      "personal_collection_verified": true,
+      "track_observed": true,
+      "track_changed": true,
+      "playback_progress_verified": true
+    },
+    {
+      "run": "native-final-01",
+      "id": "spotify-native-final-2",
+      "category": "music_playlist",
+      "pass": true,
+      "seconds": 30.672,
+      "tools": [
+        "media_status",
+        "observe",
+        "click",
+        "wait_for_media"
+      ],
+      "playing": true,
+      "personal_collection_verified": true,
+      "track_observed": true,
+      "track_changed": true,
+      "playback_progress_verified": true
+    },
+    {
+      "run": "native-final-01",
+      "id": "spotify-native-final-3",
+      "category": "music_playlist",
+      "pass": false,
+      "seconds": 23.392,
+      "tools": [
+        "observe",
+        "click"
+      ],
+      "playing": true,
+      "personal_collection_verified": true,
+      "track_observed": true,
+      "track_changed": true,
+      "playback_progress_verified": false
+    },
+    {
+      "run": "native-final-01",
+      "id": "writer-native-final-1",
+      "category": "document",
+      "pass": true,
+      "seconds": 51.574,
+      "tools": [
+        "launch",
+        "list_folder",
+        "observe",
+        "click",
+        "type_text",
+        "keys",
+        "set_text",
+        "click",
+        "click",
+        "click",
+        "observe",
+        "click",
+        "verify_text_file"
+      ],
+      "saved_file_exists": true,
+      "expected_text_found": true
+    },
+    {
+      "run": "native-final-01",
+      "id": "writer-native-final-2",
+      "category": "document",
+      "pass": true,
+      "seconds": 52.837,
+      "tools": [
+        "launch",
+        "observe",
+        "click",
+        "type_text",
+        "click",
+        "click",
+        "type_text",
+        "click",
+        "click",
+        "click",
+        "observe",
+        "click",
+        "verify_text_file"
+      ],
+      "saved_file_exists": true,
+      "expected_text_found": true
+    },
+    {
+      "run": "native-regression-01",
+      "id": "spotify-native-final-1",
+      "category": "music_playlist",
+      "pass": true,
+      "seconds": 26.068,
+      "tools": [
+        "media_status",
+        "observe",
+        "click",
+        "wait_for_media"
+      ],
+      "playing": true,
+      "personal_collection_verified": true,
+      "track_observed": true,
+      "track_changed": true,
+      "playback_progress_verified": true,
+      "position_advanced_us": 401000
+    },
+    {
+      "run": "native-regression-01",
+      "id": "spotify-native-final-2",
+      "category": "music_playlist",
+      "pass": true,
+      "seconds": 26.953,
+      "tools": [
+        "media_status",
+        "observe",
+        "click",
+        "wait_for_media"
+      ],
+      "playing": true,
+      "personal_collection_verified": true,
+      "track_observed": true,
+      "track_changed": true,
+      "playback_progress_verified": true,
+      "position_advanced_us": 402000
+    },
+    {
+      "run": "native-regression-01",
+      "id": "spotify-native-final-3",
+      "category": "music_playlist",
+      "pass": false,
+      "seconds": 72.391,
+      "tools": []
+    },
+    {
+      "run": "native-regression-01",
+      "id": "followup-launch-01",
+      "category": "launch",
+      "pass": true,
+      "seconds": 0.908,
+      "tools": [
+        "launch"
+      ]
+    },
+    {
+      "run": "native-regression-01",
+      "id": "followup-calculator-01",
+      "category": "calculator",
+      "pass": false,
+      "seconds": 28.456,
+      "tools": [
+        "observe",
+        "click",
+        "type_text",
+        "observe"
+      ]
+    },
+    {
+      "run": "native-regression-01",
+      "id": "followup-find-01",
+      "category": "find",
+      "pass": true,
+      "seconds": 7.515,
+      "tools": [
+        "find_files"
+      ]
+    },
+    {
+      "run": "native-regression-01",
+      "id": "followup-missing-01",
+      "category": "missing",
+      "pass": true,
+      "seconds": 7.211,
+      "tools": [
+        "find_files"
+      ]
+    },
+    {
+      "run": "native-regression-01",
+      "id": "followup-mkdir-01",
+      "category": "mkdir",
+      "pass": true,
+      "seconds": 6.678,
+      "tools": [
+        "mkdir"
+      ]
+    },
+    {
+      "run": "native-regression-01",
+      "id": "followup-navigate-01",
+      "category": "navigate",
+      "pass": true,
+      "seconds": 7.497,
+      "tools": [
+        "open_folder"
+      ]
+    },
+    {
+      "run": "native-regression-01",
+      "id": "followup-music-01",
+      "category": "music",
+      "pass": true,
+      "seconds": 8.112,
+      "tools": [
+        "media_status",
+        "media_control"
+      ]
+    },
+    {
+      "run": "native-regression-01",
+      "id": "followup-music_info-01",
+      "category": "music_info",
+      "pass": true,
+      "seconds": 6.731,
+      "tools": [
+        "media_status"
+      ]
+    },
+    {
+      "run": "native-regression-01",
+      "id": "followup-answer-01",
+      "category": "answer",
+      "pass": true,
+      "seconds": 1.048,
+      "tools": []
+    },
+    {
+      "run": "native-regression-01",
+      "id": "followup-unknown_app-01",
+      "category": "unknown_app",
+      "pass": true,
+      "seconds": 6.298,
+      "tools": []
+    },
+    {
+      "run": "native-regression-01",
+      "id": "followup-combined-01",
+      "category": "combined",
+      "pass": true,
+      "seconds": 13.182,
+      "tools": [
+        "mkdir",
+        "open_folder",
+        "list_folder"
+      ]
+    },
+    {
+      "run": "native-verified-01",
+      "id": "spotify-native-final-1",
+      "category": "music_playlist",
+      "pass": false,
+      "seconds": 32.171,
+      "tools": [
+        "media_status",
+        "observe",
+        "click",
+        "wait_for_media"
+      ],
+      "playing": true,
+      "personal_collection_verified": false,
+      "track_observed": false,
+      "track_changed": true,
+      "playback_progress_verified": true,
+      "position_advanced_us": 401000
+    },
+    {
+      "run": "native-verified-01",
+      "id": "spotify-native-final-2",
+      "category": "music_playlist",
+      "pass": false,
+      "seconds": 28.53,
+      "tools": [
+        "media_status",
+        "observe",
+        "click",
+        "wait_for_media"
+      ],
+      "playing": true,
+      "personal_collection_verified": false,
+      "track_observed": false,
+      "track_changed": true,
+      "playback_progress_verified": true,
+      "position_advanced_us": 402000
+    },
+    {
+      "run": "native-verified-01",
+      "id": "spotify-native-final-3",
+      "category": "music_playlist",
+      "pass": false,
+      "seconds": 27.117,
+      "tools": [
+        "observe",
+        "click",
+        "media_status"
+      ],
+      "playing": true,
+      "personal_collection_verified": false,
+      "track_observed": false,
+      "track_changed": true,
+      "playback_progress_verified": true,
+      "position_advanced_us": 401000
+    },
+    {
+      "run": "native-verified-01",
+      "id": "followup-launch-01",
+      "category": "launch",
+      "pass": true,
+      "seconds": 0.578,
+      "tools": [
+        "launch"
+      ]
+    },
+    {
+      "run": "native-verified-01",
+      "id": "followup-calculator-01",
+      "category": "calculator",
+      "pass": true,
+      "seconds": 15.839,
+      "tools": [
+        "observe",
+        "click",
+        "type_text"
+      ]
+    },
+    {
+      "run": "native-verified-01",
+      "id": "followup-find-01",
+      "category": "find",
+      "pass": true,
+      "seconds": 6.166,
+      "tools": [
+        "find_files"
+      ]
+    },
+    {
+      "run": "native-verified-01",
+      "id": "followup-missing-01",
+      "category": "missing",
+      "pass": true,
+      "seconds": 7.593,
+      "tools": [
+        "find_files"
+      ]
+    },
+    {
+      "run": "native-verified-01",
+      "id": "followup-mkdir-01",
+      "category": "mkdir",
+      "pass": true,
+      "seconds": 7.122,
+      "tools": [
+        "mkdir"
+      ]
+    },
+    {
+      "run": "native-verified-01",
+      "id": "followup-navigate-01",
+      "category": "navigate",
+      "pass": true,
+      "seconds": 7.652,
+      "tools": [
+        "open_folder"
+      ]
+    },
+    {
+      "run": "native-verified-01",
+      "id": "followup-music-01",
+      "category": "music",
+      "pass": true,
+      "seconds": 8.301,
+      "tools": [
+        "media_status",
+        "media_control"
+      ]
+    },
+    {
+      "run": "native-verified-01",
+      "id": "followup-music_info-01",
+      "category": "music_info",
+      "pass": true,
+      "seconds": 7.19,
+      "tools": [
+        "media_status"
+      ]
+    },
+    {
+      "run": "native-verified-01",
+      "id": "followup-answer-01",
+      "category": "answer",
+      "pass": true,
+      "seconds": 1.047,
+      "tools": []
+    },
+    {
+      "run": "native-verified-01",
+      "id": "followup-unknown_app-01",
+      "category": "unknown_app",
+      "pass": true,
+      "seconds": 6.626,
+      "tools": []
+    },
+    {
+      "run": "native-verified-01",
+      "id": "followup-combined-01",
+      "category": "combined",
+      "pass": true,
+      "seconds": 12.7,
+      "tools": [
+        "mkdir",
+        "open_folder",
+        "list_folder"
+      ]
+    },
+    {
+      "run": "native-verified-01",
+      "id": "writer-native-final-1",
+      "category": "document",
+      "pass": true,
+      "seconds": 41.685,
+      "tools": [
+        "launch",
+        "observe",
+        "click",
+        "type_text",
+        "click",
+        "click",
+        "type_text",
+        "click",
+        "click",
+        "click",
+        "click",
+        "verify_text_file"
+      ],
+      "saved_file_exists": true,
+      "expected_text_found": true
+    },
+    {
+      "run": "native-verified-01",
+      "id": "writer-native-final-2",
+      "category": "document",
+      "pass": true,
+      "seconds": 47.698,
+      "tools": [
+        "launch",
+        "observe",
+        "click",
+        "type_text",
+        "click",
+        "click",
+        "type_text",
+        "click",
+        "click",
+        "click",
+        "observe",
+        "click",
+        "verify_text_file"
+      ],
+      "saved_file_exists": true,
+      "expected_text_found": true
+    },
+    {
+      "run": "spotify-verified-final",
+      "id": "spotify-native-final-1",
+      "category": "music_playlist",
+      "pass": true,
+      "seconds": 30.011,
+      "tools": [
+        "media_status",
+        "observe",
+        "click",
+        "wait_for_media"
+      ],
+      "playing": true,
+      "personal_collection_verified": true,
+      "track_observed": true,
+      "track_changed": true,
+      "playback_progress_verified": true,
+      "position_advanced_us": 401000,
+      "independent_native_proof": {
+        "personal_collection_verified": true,
+        "track_observed": true,
+        "complete": true,
+        "method": "native-current-page-header-and-track-table"
+      }
+    },
+    {
+      "run": "spotify-verified-final",
+      "id": "spotify-native-final-2",
+      "category": "music_playlist",
+      "pass": true,
+      "seconds": 27.618,
+      "tools": [
+        "media_status",
+        "observe",
+        "click",
+        "wait_for_media"
+      ],
+      "playing": true,
+      "personal_collection_verified": true,
+      "track_observed": true,
+      "track_changed": true,
+      "playback_progress_verified": true,
+      "position_advanced_us": 401000,
+      "independent_native_proof": {
+        "personal_collection_verified": true,
+        "track_observed": true,
+        "complete": true,
+        "method": "native-current-page-header-and-track-table"
+      }
+    },
+    {
+      "run": "spotify-verified-final",
+      "id": "spotify-native-final-3",
+      "category": "music_playlist",
+      "pass": true,
+      "seconds": 31.398,
+      "tools": [
+        "observe",
+        "click",
+        "media_status"
+      ],
+      "playing": true,
+      "personal_collection_verified": true,
+      "track_observed": true,
+      "track_changed": true,
+      "playback_progress_verified": true,
+      "position_advanced_us": 403000,
+      "independent_native_proof": {
+        "personal_collection_verified": true,
+        "track_observed": true,
+        "complete": true,
+        "method": "native-current-page-header-and-track-table"
+      }
+    }
+  ]
+}

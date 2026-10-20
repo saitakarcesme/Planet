@@ -20,6 +20,26 @@ RUN
   under .build/x11/; other installations should provide xdotool on PATH.
   Other dependencies are installed on the development machine. No root service is added.
 
+NATIVE ACCESSIBILITY
+  Planet reads deep native AT-SPI control trees, retaining library/table/dialog
+  context and discarding invisible rows. GTK applications launched by Planet
+  no longer inherit NO_AT_BRIDGE, which had disabled their accessibility bridge.
+  Already-running applications may need a normal restart before exposing controls.
+
+  For an installed Chromium/CEF app that does not expose its controls:
+    python scripts/enable-accessibility.py spotify.desktop
+  This opt-in setup copies that installed desktop manifest into the user's
+  applications directory and adds --force-renderer-accessibility. It also
+  enables the session accessibility bus. It does not restart apps, modify the
+  packaged manifest, add an action recipe, or map requests to app shortcuts.
+  Wrapped launchers must be configured manually. The current Spotify launcher
+  is configured this way, and a normal relaunch was tested.
+  To undo a newly created override, remove that local desktop file; if it
+  replaced a pre-existing override, restore its adjacent .planet-backup-* file.
+  Accessibility remains enabled for other applications unless changed separately.
+  Chromium documents the flag at:
+    https://www.chromium.org/developers/accessibility/testing/automated-testing/ax-inspect/
+
 CONTROLS
   Drag the dots to move Planet across monitors. Click to open the chat.
   Super+Alt+P toggles the chat through the existing local Hyprland binding.
@@ -88,7 +108,11 @@ CAPABILITIES
   - Discover/list/create folders inside home, and open folders through the
     native FileManager1 API, verifying the reported location.
   - Discover media players and control playback through standard MPRIS APIs;
-    read actual playback status, track and artist metadata.
+    read actual playback status, track and artist metadata. After choosing a
+    track through the observed app UI, wait_for_media checks the chosen title,
+    playback state, stable track ID and an advancing playback position.
+  - Verify requested saved UTF-8 files against their expected text without
+    returning file contents. This complements application-side Save observations.
   - Write and answer questions with the local Qwen model.
 
 BOUNDARIES AND LIMITATIONS
@@ -123,6 +147,12 @@ LOCAL DATA
   Reports committed under reports/ are aggregate/sanitized test evidence.
 
 VALIDATION
+  Latest native workflow results: reports/NATIVE-FOLLOWUP-2026-10-20.txt.
+  Personal Spotify collection playback passed 3/3 final reruns, new Writer
+  plain-text documents 2/2, and representative core tasks 11/11. The report
+  includes exploratory failures and the independent acceptance criteria.
+  reports/VALIDATION-2026-10-20.txt retains the historical baseline.
+
   python -m unittest discover -s tests -v
   node tests/test_dots.cjs
   bash -n planet scripts/build-pointer
@@ -134,8 +164,8 @@ VALIDATION
     python tests/live_drag.py --tag my-drag
     python tests/live_drag.py --open-chat --tag my-open-drag
   Use a fresh tag for each run; old evidence is not overwritten. The live suite
-  creates only its own output/live-fixtures/ tree and mutes media during tests.
-  It pauses playback before restoring the original volume. It does not test
+  creates only its own output/live-fixtures/ tree. Runs containing music cases
+  mute media and pause playback before restoring the original volume. It does not test
   external posting, payments, deletion, account changes or software installs.
 
 FILES
@@ -145,6 +175,7 @@ FILES
   app/MessageBubble.qml Message layout
   scripts/bridge.py     Local model routing, planning, validation and cancellation
   scripts/desktop.py    Typed desktop, filesystem and media capabilities
+  scripts/accessibility.py Bounded native UI snapshots with control ancestry
   scripts/pointer.c     Small native Wayland pointer transport
   tests/                Unit, geometry and opt-in live acceptance checks
   design/explorations/  Earlier design explorations, not live application assets

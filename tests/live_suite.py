@@ -19,10 +19,73 @@ import time
 from urllib.parse import unquote
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts.bridge import Controller, ROOT
-from scripts.desktop import Desktop, hypr, GLib
+from scripts.desktop import Desktop, hypr, GLib, Atspi
 
 FIXTURES = ROOT/'output/live-fixtures'
 REPORTS = ROOT/'output/acceptance'
+
+
+def native_collection_proof(desktop, window, collection, track):
+    """Independent read-only oracle, including a header scrolled above the viewport.
+
+    The executor exposes only showing controls. The oracle may read the current
+    page's offscreen identity metadata, but never activates a hidden control.
+    """
+    library_names = []
+    pages = []
+    visited = 0
+    complete = True
+    deadline = time.monotonic()+3
+
+    def walk(node, in_library=False, page=None, in_tracks=False):
+        nonlocal visited, complete
+        if visited >= 4000 or time.monotonic() > deadline:
+            complete = False
+            return
+        visited += 1
+        role, name = node.get_role_name(), node.get_name() or ''
+        if role == 'landmark' and name not in ('Main', 'Spotify – '+collection):
+            return
+        if role == 'table' and name == 'Your Library':
+            in_library = True
+        if in_library and role == 'button' and name.startswith(collection+' '):
+            library_names.append(name)
+        if role == 'landmark' and name == 'Spotify – '+collection:
+            page = {'links': [], 'public': False, 'table': False, 'track': False}
+            pages.append(page)
+        if page is not None:
+            if role == 'link':
+                page['links'].append(name)
+            if name == 'Public Playlist':
+                page['public'] = True
+            if role == 'table' and name == collection:
+                in_tracks = True
+                page['table'] = True
+            if in_tracks and role == 'table row' and track and track.casefold() in name.casefold():
+                page['track'] = True
+        count = node.get_child_count()
+        if count > 160:
+            complete = False
+        for i in range(min(count, 160)):
+            walk(node.get_child_at_index(i), in_library, page, in_tracks)
+
+    try:
+        current = desktop.window(window['address'])
+        for app in Atspi.get_desktop(0):
+            if app.get_process_id() != current['pid']:
+                continue
+            for i in range(app.get_child_count()):
+                frame = app.get_child_at_index(i)
+                if frame.get_name() == current['title']:
+                    walk(frame)
+        owned = [page for page in pages if not page['public'] and page['table'] and
+                 any(label.endswith('• '+owner) for label in library_names for owner in page['links'] if owner)]
+        return {'personal_collection_verified': bool(owned) and complete,
+                'track_observed': any(page['track'] for page in owned) and complete,
+                'complete': complete,
+                'method': 'native-current-page-header-and-track-table'}
+    except Exception as error:
+        return {'personal_collection_verified': False, 'track_observed': False, 'error': str(error)}
 
 
 def cases():
@@ -136,9 +199,36 @@ def verify(case, c, result):
         evidence['playlist_observed']=any(e['playlist'].casefold() in s.casefold() for s in labels)
         personal=[s for s in snapshots if any(n.get('text','')=='Liked Songs' for n in s['elements']) and not any('public playlist' in n.get('text','').casefold() for n in s['elements'])]
         body_labels=[n.get('text','') for s in personal for n in s['elements'] if n.get('position',[0,10000])[1]<s['window']['size'][1]-150]
+        # Native accessibility exposes the collection, its owner and each track's
+        # table ancestry. A footer or same-name global search result is not proof.
+        native_personal=[]
+        for s in snapshots:
+            nodes=s['elements']
+            page=f'landmark: Spotify – {e["playlist"]}'
+            owners={n.get('name') for n in nodes if n.get('role')=='link' and n.get('context')==[page]}
+            library=[n.get('name','') for n in nodes if 'table: Your Library' in n.get('context',[]) and e['playlist'] in n.get('name','')]
+            owned=any(any(label.endswith('• '+owner) for label in library) for owner in owners if owner)
+            table=any(n.get('role')=='table' and n.get('name')==e['playlist'] and page in n.get('context',[]) for n in nodes)
+            public=any(n.get('name')=='Public Playlist' and page in n.get('context',[]) for n in nodes)
+            if owned and table and not public:
+                native_personal.append(s)
+        native_track=[n for s in native_personal for n in s['elements']
+                      if n.get('role')=='table row' and f'table: {e["playlist"]}' in n.get('context',[])]
+        body_labels += [n.get('name','') for n in native_track]
+        evidence['personal_collection_verified']=bool(native_personal)
         evidence['track_observed']=bool(player.get('title')) and any(player['title'].casefold() in s.casefold() for s in body_labels)
+        if not evidence['personal_collection_verified'] and snapshots:
+            proof=native_collection_proof(c.desktop,snapshots[-1]['window'],e['playlist'],player.get('title'))
+            evidence['independent_native_proof']=proof
+            evidence['personal_collection_verified']=proof['personal_collection_verified']
+            evidence['track_observed']=proof['track_observed']
         evidence['track_changed']=bool(player.get('track_id')) and player['track_id']!=e.get('initial_track_id')
-        passed=evidence['playing'] and evidence['playlist_observed'] and evidence['track_observed'] and evidence['track_changed'] and any(n in names for n in ('click','keys','type_text'))
+        # The acceptance oracle measures the outcome independently, even when
+        # the planner used the application's own Now Playing state as evidence.
+        progress=c.desktop.wait_for_media(player['player'],player['title'],'Playing',3) if player.get('title') else {}
+        evidence['playback_progress_verified']=progress.get('verified',False)
+        evidence['position_advanced_us']=progress.get('position_advanced_us',0)
+        passed=evidence['playing'] and evidence['personal_collection_verified'] and evidence['track_observed'] and evidence['track_changed'] and evidence['playback_progress_verified'] and any(n in names for n in ('click','keys','type_text'))
     else:raise ValueError(category)
     return bool(ok and passed),evidence
 
@@ -161,7 +251,9 @@ def main():
     output=REPORTS/(args.tag+'.jsonl')
     if output.exists():raise SystemExit('Report tag already exists; use a new tag to preserve evidence.')
     (REPORTS/(args.tag+'-cases.json')).write_text(json.dumps(selected,ensure_ascii=False,indent=2))
-    d=Desktop();players=d.media_status()['players'];volumes={p['player']:media_volume(d,p['player']) for p in players if p['name']=='Spotify'}
+    d=Desktop()
+    players=d.media_status()['players'] if any(c['category'].startswith('music') for c in selected) else []
+    volumes={p['player']:media_volume(d,p['player']) for p in players if p['name']=='Spotify'}
     for p in volumes:media_volume(d,p,0.0)
     subprocess.run([str(ROOT/'planet'),'close'],capture_output=True)
     completed=[]
