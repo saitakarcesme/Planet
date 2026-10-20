@@ -1,7 +1,7 @@
 // Deterministic irregular packing. The spacing bound also reserves room for
 // each dot's independent drift at its largest possible size.
 var minimumSeparation = 5.3;
-var minimumRadius = 0.24;
+var minimumRadius = 0.65;
 var maximumRadius = 1.8;
 var maximumDrift = 0.25;
 
@@ -27,7 +27,7 @@ function points(size) {
     return positions.map(function(p) {
         return {x:size/2+p.x*scale,y:size/2+p.y*scale,
             cx:size/2,cy:size/2,phase:random()*Math.PI*2,
-            tempo:0.82+random()*0.4,peak:0.78+random()*0.22,scale:scale};
+            tempo:0.82+random()*0.4,peak:0.94+random()*0.06,scale:scale};
     });
 }
 

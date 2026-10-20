@@ -26,11 +26,19 @@ class Node:
 
 
 API = types.SimpleNamespace(
-    StateType=types.SimpleNamespace(SHOWING='showing', FOCUSED='focused', SELECTED='selected'),
+    StateType=types.SimpleNamespace(SHOWING='showing', FOCUSED='focused', SELECTED='selected', EDITABLE='editable'),
     Text=types.SimpleNamespace(get_text=lambda node, start, end: node.text[start:end]))
 
 
 class AccessibilityTests(unittest.TestCase):
+    def test_cef_editable_state_without_editable_text_interface(self):
+        field = Node('combo box', 'Search', text='old query')
+        field.get_state_set = lambda: types.SimpleNamespace(
+            contains=lambda state: state in ('showing', 'editable'))
+        items, truncated = snapshot(field, API, 1, '0x1', {})
+        self.assertTrue(items[0]['editable'])
+        self.assertFalse(truncated)
+
     def test_button_only_tree_still_requires_ocr_for_custom_readout(self):
         self.assertFalse(has_readable_content([{'role': 'button', 'name': 'Equals'},
                                                {'role': 'button', 'name': '7'}]))

@@ -335,6 +335,44 @@ class Desktop:
             raise ValueError('The application rejected text editing.')
         return self.after_input(address)
 
+    def fill_field(self, element, expected_label, text, submit=''):
+        """One observed field edit, with no app-specific navigation recipe."""
+        if element not in self.nodes:
+            raise ValueError('Use an editable element from the latest observation.')
+        if not isinstance(text, str) or len(text) > 4000 or any(ord(c) < 32 for c in text):
+            raise ValueError('Use one plain-text line, up to 4,000 characters.')
+        if submit not in ('', 'Return', 'Tab'):
+            raise ValueError('Submit must be empty, Return, or Tab.')
+        kind, node, address, _ = self.nodes[element]
+        self.guard(address)
+        if kind != 'atspi' or not (node.is_editable_text() or node.get_state_set().contains(Atspi.StateType.EDITABLE)):
+            raise ValueError('This is not an observed editable accessibility field.')
+        if ' '.join(expected_label.split()) != ' '.join((node.get_name() or '').split()):
+            raise ValueError('Field label changed. Observe again.')
+        if not node.get_component_iface().grab_focus():
+            raise ValueError('Could not focus the field; no text was entered.')
+        self.guard(address)
+        if not node.is_editable_text():
+            # CEF exposes EDITABLE state without the EditableText interface.
+            # Confirm field focus before using the native keyboard fallback.
+            deadline = time.monotonic() + .5
+            while not node.get_state_set().contains(Atspi.StateType.FOCUSED) and time.monotonic() < deadline:
+                time.sleep(.02)
+            if not node.get_state_set().contains(Atspi.StateType.FOCUSED):
+                raise ValueError('The editable field did not receive focus.')
+            w = self.guard(address)
+            if w.get('xwayland'):
+                self.x11(['key', '--clearmodifiers', 'ctrl+a'])
+            else:
+                command(['wtype', '-M', 'ctrl', '-k', 'a', '-m', 'ctrl'])
+            return self.type_text(address, text, submit)
+        if not node.set_text_contents(text):
+            raise ValueError('Application rejected text editing.')
+        self.last_click = None
+        if submit:
+            return self.keys(address, submit)
+        return self.after_input(address)
+
     def keys(self, address, keys):
         self.last_click=None
         w = self.guard(address)

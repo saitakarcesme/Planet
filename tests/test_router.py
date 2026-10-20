@@ -15,10 +15,95 @@ def tool(name, **args):
 
 
 class ControllerTests(unittest.TestCase):
+    def test_empty_action_reply_skips_translation_model(self):
+        c = self.controller()
+        with patch('scripts.bridge.http') as request:
+            self.assertEqual(Controller.english(c, ''), '')
+        request.assert_not_called()
+
+    def test_action_completion_is_silent_but_requested_information_is_kept(self):
+        for route, expected in [('desktop', ''), ('desktop_answer', 'The result is 391.')]:
+            c = self.controller()
+            c.call = Mock(side_effect=[
+                tool('media_status'),
+                tool('finish', status='done', message='The result is 391.', evidence='391')])
+            c.desktop.media_status.return_value = {'value': '391'}
+            with patch('scripts.bridge.decision', return_value=(route, 1)), contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(c.run(), (True, expected, 'done'))
+
+    def test_initial_observation_only_uses_confident_observed_window_selection(self):
+        for choice, probability, expected in [('w0', .99, True), ('w0', .5, False), ('none', .99, False)]:
+            c = self.controller()
+            c.desktop.overview.return_value = {'windows': [{'address': '0xa', 'class': 'Native', 'title': 'Document'}]}
+            c.desktop.observe.return_value = {'window': {'address': '0xa'}, 'elements': []}
+            with patch('scripts.bridge.decision', return_value=(choice, probability)), contextlib.redirect_stdout(io.StringIO()):
+                result = c.initial_context()
+            self.assertEqual('initial_observation' in result, expected)
+            self.assertEqual(c.desktop.observe.called, expected)
+            c.desktop.catalog.assert_not_called()
+
+    def test_answer_to_desktop_switch_keeps_fresh_initial_controls(self):
+        c = self.controller()
+        c.initial_context = Mock(return_value={'initial_observation': {'fresh_control': 'a1:4'}})
+        captured = []
+        def reply(messages, tools):
+            captured.append(json.loads(json.dumps(messages)))
+            return (tool('request_desktop') if len(captured) == 1 else
+                    tool('finish', status='blocked', message='Missing information.', evidence=''))
+        c.call = reply
+        with patch('scripts.bridge.decision', return_value=('answer', 1)), contextlib.redirect_stdout(io.StringIO()):
+            c.run()
+        self.assertIn('a1:4', captured[1][-1]['content'])
+
+    def test_fill_field_rejects_stale_label_before_editing(self):
+        d = Desktop.__new__(Desktop)
+        node = Mock()
+        node.get_name.return_value = 'Actual field'
+        d.nodes = {'a1': ('atspi', node, '0xa', [])}
+        d.guard = Mock()
+        with self.assertRaisesRegex(ValueError, 'label changed'):
+            d.fill_field('a1', 'Different field', 'new value', 'Return')
+        node.set_text_contents.assert_not_called()
+        node.get_component_iface.assert_not_called()
+
+    def test_fill_field_requires_focus_and_rejects_multiline(self):
+        d = Desktop.__new__(Desktop)
+        node = Mock()
+        node.get_name.return_value = 'Search'
+        node.get_component_iface.return_value.grab_focus.return_value = False
+        d.nodes = {'a1': ('atspi', node, '0xa', [])}
+        d.guard = Mock()
+        with self.assertRaisesRegex(ValueError, 'focus'):
+            d.fill_field('a1', 'Search', 'query', 'Return')
+        node.set_text_contents.assert_not_called()
+        with self.assertRaisesRegex(ValueError, 'plain-text'):
+            d.fill_field('a1', 'Search', 'query\ncommand', 'Return')
+
+    def test_cef_field_waits_for_focus_before_keyboard_replacement(self):
+        from scripts.desktop import Atspi
+        d = Desktop.__new__(Desktop)
+        node = Mock()
+        node.get_name.return_value = 'Search'
+        node.is_editable_text.return_value = False
+        focused = iter([False, True, True])
+        node.get_state_set.return_value.contains.side_effect = lambda s: (
+            True if s == Atspi.StateType.EDITABLE else next(focused))
+        d.nodes = {'a1': ('atspi', node, '0xa', [])}
+        d.guard = Mock(return_value={'xwayland': True})
+        d.x11 = Mock()
+        d.type_text = Mock(return_value={'verified': True})
+        with patch('scripts.desktop.time.sleep'):
+            result = d.fill_field('a1', 'Search', 'Requested artist', 'Return')
+        self.assertTrue(result['verified'])
+        d.x11.assert_called_once_with(['key', '--clearmodifiers', 'ctrl+a'])
+        d.type_text.assert_called_once_with('0xa', 'Requested artist', 'Return')
+        node.set_text_contents.assert_not_called()
+
     def controller(self):
         desktop = Mock()
         desktop.catalog.return_value = [{'id': 'different.desktop', 'name': 'Different App'}]
         desktop.overview.return_value = {'windows': []}
+        desktop.media_status.return_value = {'players': []}
         desktop.describe.return_value = {'window': {'address': '0x1', 'class': 'test'}}
         with patch('scripts.bridge.generator', return_value=('http://localhost/v1', 'test')):
             c = Controller('Open the requested app', desktop=desktop)

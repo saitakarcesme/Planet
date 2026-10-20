@@ -19,7 +19,7 @@ Item {
         x: row.role === "user" ? row.width - width : 0
         y: row.entrance ? 0 : 8
         radius: 17
-        color: row.role === "user" ? "#202020" : "#ededed"
+        color: row.role === "user" ? "#e4e4e7" : "#fafafa"
         Behavior on y { NumberAnimation { duration: row.motion ? 220 : 0; easing.type: Easing.OutCubic } }
         Text {
             id: label
@@ -31,7 +31,7 @@ Item {
             font.family: "Inter"
             font.pixelSize: 13
             lineHeight: 1.16
-            color: row.role === "user" ? "#f5f5f5" : "#171717"
+            color: "#171719"
         }
     }
 }

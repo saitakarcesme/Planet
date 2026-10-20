@@ -51,9 +51,12 @@ CONTROLS
 
 DESIGN
   Monochrome, borderless, floating messages with no parent background.
-  A 60 x 60 companion contains 31 irregularly placed white dots. Independent
+  A 76 x 76 companion contains 31 irregularly placed white dots. Independent
   size changes, drift and rotation keep the field animated. The continuous
-  minimum dot separation at this size is 1.72 px, including maximum drift.
+  minimum dot separation at this size is 2.17 px, including maximum drift.
+  Dots retain a visible minimum size throughout their animation. User messages
+  and the composer use pale gray with dark text. Send/stop glyphs are drawn
+  with rounded strokes/shapes instead of platform-dependent font characters.
   Chat width is 320 px; history is capped at 360 px and scrolls. Composer
   height grows from 38 to 76 px. Empty desktop space passes clicks through.
   The overlay sits above application windows, including fullscreen windows.
@@ -86,12 +89,23 @@ MODELS AND ROUTING
      application catalog. There are no phrase-to-app or phrase-to-URL maps.
   3. Qwen handles new arguments, multi-step tasks, questions and writing.
      It receives the available typed tools and observed desktop state.
+     H2O can select a relevant existing window for an initial native observation,
+     avoiding a Qwen turn just to choose that window. The installed app catalog
+     is fetched on demand; existing-window tasks do not carry it on every turn.
+     An observed editable field can be focused, replaced and confirmed in one
+     fill_field call. CEF fields with EDITABLE state use a focus-checked keyboard
+     fallback when they do not expose the EditableText interface.
   4. Before a mutation, H2O checks the proposed step against the human request
      and resolved target. Uncertain steps receive a second, tool-free Qwen
      authorization assessment. Model confidence is not user permission.
   5. Results return to the controller. Completion requires observed evidence
      and an independent Qwen outcome assessment against the actual request;
      unsupported or unverified work is reported explicitly.
+  Successful action-only requests finish silently, without automatic chat
+  confirmations or a translation pass. Requested information, generated text,
+  necessary questions and failures remain visible. Each model/tool duration
+  is recorded privately so playback onset and total verification time can be
+  distinguished. Multi-step native UI tasks do not have a one-second guarantee.
 
 CAPABILITIES
   - Discover/open/focus installed native applications via desktop manifests.
@@ -147,6 +161,10 @@ LOCAL DATA
   Reports committed under reports/ are aggregate/sanitized test evidence.
 
 VALIDATION
+  Latest latency/UI measurements: reports/LATENCY-UI-2026-10-20.txt.
+  Existing-app focus completed in 0.787s; a fresh artist-search trial reached
+  Playing in 19.293s. Replaying an already-selected artist is measured separately.
+  Arbitrary music searches have not reached the one-second target.
   Latest native workflow results: reports/NATIVE-FOLLOWUP-2026-10-20.txt.
   Personal Spotify collection playback passed 3/3 final reruns, new Writer
   plain-text documents 2/2, and representative core tasks 11/11. The report

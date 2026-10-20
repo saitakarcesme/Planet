@@ -1,0 +1,65 @@
+Planet latency and pale UI follow-up — 2026-10-20
+
+Changes
+  Companion: 76px, 31 white dots with a more visible minimum radius.
+  User bubbles and composer: pale gray, dark text, no border.
+  Send/stop: font-independent rounded vector glyphs with hover/press feedback.
+  Pure successful actions: no automatic assistant message or translation pass.
+  Requested information, questions and errors remain visible.
+  H2O can select a relevant existing window for an initial observation.
+  Application catalog is fetched only when needed. Native media state is
+  supplied with the initial observation. Overlay focus is released once.
+  Generic fill_field focuses, replaces and optionally confirms observed fields.
+  CEF EDITABLE fields without EditableText use a verified-focus keyboard
+  fallback. Focus propagation is polled for up to 0.5s before entering text.
+  No artist, phrase, application shortcut or URL recipe was added.
+
+Real local model measurements
+  Existing Spotify app open/focus through the actual Planet UI:
+    0.787s to successful result; exactly one user message added, no assistant
+    confirmation. This is not a cold application startup measurement.
+
+  ABBA search from Home with a different artist initially playing/paused:
+    Playing observed at 21.542s; verified completion at 34.179s.
+    This exploratory run exposed asynchronous field-focus propagation; the
+    planner recovered after another observation. Focus polling was then added.
+
+  ABBA replay from Home, ABBA already selected and paused:
+    Playing observed at 9.527s; verified completion at 17.698s.
+    The model used native Play. This is NOT a fresh artist-search benchmark.
+
+  New Queen search from Home, ABBA initially selected and paused:
+    Playing observed at 19.293s; verified completion at 32.833s.
+    fill_field succeeded; chosen title and advancing playback position were
+    verified through MPRIS. The run also exposed an unnecessary observe after
+    answer-to-desktop fallback: initial controls were prematurely compacted.
+    That lifecycle bug was subsequently fixed and covered by a regression test;
+    the corrected fallback has not been latency-benchmarked again.
+
+  Artist requests used actual native Spotify controls, with independent MPRIS
+  polling every 100ms for Playing and the requested artist. Playback was muted
+  for testing, then paused and the original volume restored. These numbers
+  measure player state, not audio output latency. They are individual runs,
+  not cold/warm averages or percentile claims.
+
+  Earlier user trace reached the ABBA play control around 25–26s and was
+  cancelled before final verification. Its state and cache conditions differ.
+  Three preliminary fixture setup attempts were interrupted by changing desktop
+  focus before the model task started; guards prevented typing elsewhere.
+
+Limits
+  One-second completion for arbitrary artist search is NOT achieved.
+  Large-model UI interpretation still dominates; final semantic verification
+  adds several seconds after playback starts. No checks were removed merely
+  to claim a faster completion.
+  Full historical application acceptance suites were not rerun in this change.
+
+Validation
+  46 Python unit/regression tests pass.
+  Dot geometry passes at 48, 60 and 76px; minimum continuous gap at 76px:
+    2.1769px, accounting for maximum size and drift.
+  Eight live open-chat cross-monitor drags pass: 320 samples, 0px maximum
+  position error, zero canceled grabs or accidental chat toggles.
+  Actual QML loaded successfully; open/collapsed captures inspected.
+  Python compilation and git diff whitespace checks pass.
+  Private traces, screenshots and benchmark fixtures remain ignored.

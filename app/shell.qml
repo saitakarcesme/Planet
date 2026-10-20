@@ -13,7 +13,7 @@ ShellRoot {
     property int dragEvents: 0
     property int dragCancels: 0
     property bool priming: false
-    readonly property int orbSize: 60
+    readonly property int orbSize: 76
     property real globalX: 1360
     property real globalY: 940
     property string owner: Quickshell.screens.length ? Quickshell.screens[0].name : ""
@@ -178,7 +178,7 @@ ShellRoot {
                         root.workerReplied = true;
                         root.desktopControl=false;
                         root.activity=event.code==="needs_input" ? "Needs your input" : event.ok ? "Done" : "Stopped";
-                        root.add("assistant", event.message);
+                        if (event.message && event.message.trim()) root.add("assistant", event.message);
                         root.phase = event.ok ? "success" : "error";
                         resetTimer.restart();
                     }
@@ -399,7 +399,7 @@ ShellRoot {
                 radius: 19
                 visible: panel.reveal>0
                 opacity: panel.reveal
-                color: "#1c1c1c"
+                color: "#e4e4e7"
                 Behavior on height { NumberAnimation { duration: root.motion ? 160 : 0; easing.type: Easing.OutCubic } }
                 Flickable {
                     id: inputScroll
@@ -411,8 +411,9 @@ ShellRoot {
                         width: inputScroll.width
                         text: root.draft
                         font.family: "Inter"; font.pixelSize: 13
-                        color: "#f5f5f5"
-                        selectionColor: "#666666"
+                        color: "#171719"
+                        selectionColor: "#b5b5bc"
+                        selectedTextColor: "#101012"
                         wrapMode: TextEdit.Wrap
                         selectByMouse: true
                         textFormat: TextEdit.PlainText
@@ -437,22 +438,30 @@ ShellRoot {
                     }
                     Text {
                         visible: !editor.text.length
-                        text: "Ask anything…"; color: "#aaaaaa"
+                        text: "Ask anything…"; color: "#6a6a72"
                         font.family: "Inter"; font.pixelSize: 13
                     }
                 }
                 Item {
                     width: 32; height: parent.height
                     anchors.right: parent.right; anchors.rightMargin: 4
-                    opacity: 1
-                    Text { anchors.centerIn: parent; text: root.busy ? "■" : "↑"; font.pixelSize: 23; color: "#f5f5f5" }
-                    MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor; onClicked: root.busy ? root.cancelTask() : root.submit(editor.text) }
+                    opacity: root.busy || editor.text.trim().length ? 1 : 0.45
+                    ActionGlyph {
+                        anchors.centerIn: parent
+                        stopping: root.busy
+                        hovered: actionMouse.containsMouse
+                        pressed: actionMouse.pressed
+                    }
+                    Accessible.role: Accessible.Button
+                    Accessible.name: root.busy ? "Stop task" : "Send message"
+                    Accessible.onPressAction: root.busy ? root.cancelTask() : root.submit(editor.text)
+                    MouseArea { id: actionMouse; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.busy ? root.cancelTask() : root.submit(editor.text) }
                 }
             }
             Text {
                 id: status
                 x: panel.chatX+4; y: composer.y+composer.height+8
-                visible: root.opened && !root.desktopControl && panel.active && root.phase !== "idle"
+                visible: root.opened && !root.desktopControl && panel.active && (root.busy || root.phase === "error")
                 text: root.demoRunning ? "Motion preview" : root.activity || (root.phase === "error" ? "Needs attention" : "Done")
                 color: "#bcbcbc"; font.pixelSize: 11
             }

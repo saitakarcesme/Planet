@@ -37,7 +37,7 @@ def snapshot(root, atspi, serial, address, nodes, limit=240):
             actions = [node.get_action_name(i) for i in range(node.get_n_actions())] if node.is_action() else []
             if role in ('static', 'label', 'paragraph', 'table cell', 'heading', 'landmark', 'table'):
                 actions = []  # CEF advertises clickAncestor even on decorative text.
-            editable = node.is_editable_text()
+            editable = node.is_editable_text() or state.contains(atspi.StateType.EDITABLE)
             content = ''
             if visible and node.is_text() and role not in ('document web', 'panel', 'section', 'table', 'table row'):
                 text = node.get_text_iface()

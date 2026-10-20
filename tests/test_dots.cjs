@@ -1,7 +1,7 @@
 const fs=require('node:fs'), vm=require('node:vm'), assert=require('node:assert/strict'), path=require('node:path');
 const field=vm.createContext({Math});
 vm.runInContext(fs.readFileSync(path.join(__dirname,'../app/DotField.js'),'utf8'),field);
-for (const size of [48,60]) {
+for (const size of [48,60,76]) {
 const scale=size/48;
 const dots=field.points(size);
 let minimumGap=Infinity;
