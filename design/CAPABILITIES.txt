@@ -1,7 +1,8 @@
 Planet — 100 built-in capabilities
 
 Aliases accept English and Turkish. Values in braces are parameters.
-Unknown or compound requests use the general model planner.
+Up to four fully recognized clauses can compose a request.
+Unknown requests use the general model planner; partial matches never execute.
 Native app availability and application state are checked at execution time.
 
 001. app.open — Open an installed native application
@@ -73,7 +74,7 @@ Native app availability and application state are checked at execution time.
 034. media.volume — Set player volume percent
      music volume {percent} | muzik sesini {percent} yap
 035. media.search — Find and play an artist or song in Spotify
-     play {query} on spotify | spotify play {query} | spotifydan {query} sarkisi ac bir tane | spotifydan {query} cal | {query} cal
+     play {query} on spotify | spotify play {query} | spotifydan {query} sarkisi ac bir tane | spotifydan {query} cal | spotifyda {query} cal | spotify'da {query} cal | spotifyda {query} ac | spotify'da {query} ac | {query} cal
 036. files.home — Open home folder
      open home folder | ev klasorunu ac
 037. files.downloads — Open downloads folder

@@ -1,0 +1,164 @@
+{
+  "date": "2026-10-20",
+  "unit_tests": 70,
+  "final_live_passed": 10,
+  "final_live_attempted": 10,
+  "runs": {
+    "warm-02": [
+      {
+        "request": "play ABBA on spotify",
+        "seconds": 3.35,
+        "passed": true,
+        "playing": true,
+        "position_advanced": true,
+        "artist_matches": true,
+        "result": {
+          "type": "result",
+          "ok": true,
+          "message": "",
+          "code": "done"
+        }
+      },
+      {
+        "request": "play some music on spotify",
+        "seconds": 0.766,
+        "passed": true,
+        "playing": true,
+        "position_advanced": true,
+        "artist_matches": true,
+        "result": {
+          "type": "result",
+          "ok": true,
+          "message": "",
+          "code": "done"
+        }
+      },
+      {
+        "request": "play my liked songs",
+        "seconds": 3.111,
+        "passed": true,
+        "playing": true,
+        "position_advanced": true,
+        "artist_matches": true,
+        "result": {
+          "type": "result",
+          "ok": true,
+          "message": "",
+          "code": "done"
+        }
+      },
+      {
+        "request": "Spotify'da bir şey çal",
+        "seconds": 0.622,
+        "passed": true,
+        "playing": true,
+        "position_advanced": true,
+        "artist_matches": true,
+        "result": {
+          "type": "result",
+          "ok": true,
+          "message": "",
+          "code": "done"
+        }
+      },
+      {
+        "request": "play Queen on spotify",
+        "seconds": 3.202,
+        "passed": true,
+        "playing": true,
+        "position_advanced": true,
+        "artist_matches": true,
+        "result": {
+          "type": "result",
+          "ok": true,
+          "message": "",
+          "code": "done"
+        }
+      }
+    ],
+    "cold-02": [
+      {
+        "request": "play ABBA on spotify",
+        "seconds": 5.761,
+        "passed": true,
+        "playing": true,
+        "position_advanced": true,
+        "artist_matches": true,
+        "result": {
+          "type": "result",
+          "ok": true,
+          "message": "",
+          "code": "done"
+        }
+      },
+      {
+        "request": "play some music on spotify",
+        "seconds": 0.439,
+        "passed": true,
+        "playing": true,
+        "position_advanced": true,
+        "artist_matches": true,
+        "result": {
+          "type": "result",
+          "ok": true,
+          "message": "",
+          "code": "done"
+        }
+      },
+      {
+        "request": "play my liked songs",
+        "seconds": 2.867,
+        "passed": true,
+        "playing": true,
+        "position_advanced": true,
+        "artist_matches": true,
+        "result": {
+          "type": "result",
+          "ok": true,
+          "message": "",
+          "code": "done"
+        }
+      },
+      {
+        "request": "Spotify'da bir şey çal",
+        "seconds": 0.436,
+        "passed": true,
+        "playing": true,
+        "position_advanced": true,
+        "artist_matches": true,
+        "result": {
+          "type": "result",
+          "ok": true,
+          "message": "",
+          "code": "done"
+        }
+      },
+      {
+        "request": "play Queen on spotify",
+        "seconds": 4.39,
+        "passed": true,
+        "playing": true,
+        "position_advanced": true,
+        "artist_matches": true,
+        "result": {
+          "type": "result",
+          "ok": true,
+          "message": "",
+          "code": "done"
+        }
+      }
+    ]
+  },
+  "conditions": {
+    "cold-02": "Spotify launched with session accessibility disabled; Planet enabled/recovered native access.",
+    "warm-02": "Existing Spotify process with native controls ready."
+  },
+  "initial_investigation": "Initial five-case run passed 3/5; readiness wait fixed the two remaining search/library failures. First cold run passed 4/5, with playback changing after reported completion in one rapid pause/resume case. The harness now waits for a verified inter-case Paused state before issuing the next request. Final warm and cold runs each passed 5/5; no arbitrary long-term playback guarantee.",
+  "models": {
+    "initial_state": "Both local endpoints offline; no resident pair active.",
+    "action": "Restarted existing guarded model-lab profile without evicting another model.",
+    "semantic_pause_seconds": 0.435,
+    "qwen_answer_seconds": 2.334,
+    "autostart": false
+  }
+}

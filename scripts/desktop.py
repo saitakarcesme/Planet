@@ -81,9 +81,26 @@ class Desktop:
                 return True
         raise ValueError('Focus could not be verified; no input was sent.')
 
+    def ensure_accessibility(self):
+        """Enable the session bus before starting native accessibility clients."""
+        self.bus_call('org.a11y.Bus', '/org/a11y/bus',
+                      'org.freedesktop.DBus.Properties', 'Set',
+                      GLib.Variant('(ssv)', ('org.a11y.Status', 'IsEnabled', GLib.Variant('b', True))))
+
+    def accessibility_registered(self, address):
+        pid = self.window(address)['pid']
+        for app in Atspi.get_desktop(0):
+            try:
+                if app.get_process_id() == pid and app.get_child_count() > 0:
+                    return True
+            except Exception:
+                continue
+        return False
+
     def launch(self, app_id):
         if app_id not in self.apps:
             raise ValueError('Application ID is not in the installed application catalog.')
+        self.ensure_accessibility()
         app = self.apps[app_id]
         identities = {app_id.removesuffix('.desktop').lower(),
                       (app.get_startup_wm_class() or '').lower(),
@@ -138,6 +155,7 @@ class Desktop:
             return set()
 
     def observe(self, address):
+        self.ensure_accessibility()
         changed=self.focus(address)
         if changed:dispatch('hl.dsp.window.bring_to_top()')
         time.sleep(.1)

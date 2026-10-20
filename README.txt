@@ -104,6 +104,13 @@ MODELS AND ROUTING
   Songs requires the user's library entry and collection owner, not a matching
   public playlist. Playback success requires matching metadata and advancing
   position. Native controls must be accessible and the account must be signed in.
+  “Play some music on Spotify” / “Spotify'da bir şey çal” resumes the current
+  Spotify queue directly through MPRIS without focusing the app or searching
+  those words. With no playable queue it tries the observed personal library.
+  Before native launches/observations Planet enables the session accessibility
+  bus. If a flagged Spotify process predates that bus and never attaches, the
+  Spotify recipe performs one graceful native restart, then waits for actual
+  search/library controls to become ready. This recovery can take several seconds.
   Unknown desktop tasks still depend on model latency and accessibility coverage;
   neither generic tasks nor arbitrary Spotify searches have a one-second promise.
 
@@ -163,7 +170,8 @@ LOCAL DATA
   Timers are transient planet-timer-* units in the current user's systemd session.
 
 VALIDATION
-  Latest: reports/COMMAND-CAPABILITIES-2026-10-20.txt and its aggregate JSON.
+  Latest Spotify regression: reports/SPOTIFY-RECOVERY-2026-10-20.txt.
+  Full capability baseline: reports/COMMAND-CAPABILITIES-2026-10-20.txt and JSON.
   Final full run: 100 capabilities attempted, 98 passed, 2 unavailable because
   this machine has no default microphone. Of the 98 successful operations,
   96 completed in under 1 second; median full CLI latency was 0.2103 seconds.
@@ -179,6 +187,8 @@ VALIDATION
     python tests/live_capabilities.py --read-only --tag my-readonly-run
     python tests/live_capabilities.py --all --tag my-full-run
     python tests/live_ui.py --tag my-ui-run
+    python tests/live_spotify_recovery.py --tag my-spotify-run
+    python tests/live_spotify_recovery.py --cold --tag my-spotify-startup-run
   Use fresh tags. Full trials create their own local fixtures and windows,
   temporarily change audio/workspaces and restore settings. Playback is muted
   during tests and left paused. Agent-terminal checks verify a visible terminal,

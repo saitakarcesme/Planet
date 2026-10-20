@@ -5,20 +5,92 @@ from .skills import normalized
 from .capabilities import CapabilityError, result
 
 
+GENERIC_MUSIC = {'some music', 'something', 'anything', 'a song', 'any song',
+                 'music', 'bir sey', 'bir sarki', 'herhangi bir sarki', 'muzik'}
+
+
+def playing_progress(d, matches, seconds=3):
+    """Observe actual progressing playback, not just a successful input event."""
+    first=None;deadline=time.monotonic()+seconds
+    while True:
+        current=next((p for p in d.media_status()['players'] if p['name']=='Spotify'),{})
+        if current.get('state')=='Playing' and matches(current):
+            if first and first.get('track_id')==current.get('track_id') and current.get('position_us',0)-first.get('position_us',0)>=150000:
+                return result(player=current,position_advanced_us=current['position_us']-first['position_us'])
+            first=current if first is None or first.get('track_id')!=current.get('track_id') else first
+        else:first=None
+        if time.monotonic()>=deadline:return None
+        time.sleep(.08)
+
+
+def ensure_spotify_controls(d,address):
+    if d.accessibility_registered(address):return address
+    # A CEF process started before the accessibility bus was enabled may never
+    # attach, despite its launcher flag. Restart once through native MPRIS.
+    deadline=time.monotonic()+.5
+    while time.monotonic()<deadline:
+        if d.accessibility_registered(address):return address
+        time.sleep(.1)
+    if '--force-renderer-accessibility' not in (d.apps['spotify.desktop'].get_commandline() or ''):
+        raise CapabilityError('Spotify accessibility is not configured. Enable its native accessibility launcher first.')
+    d.bus_call('org.mpris.MediaPlayer2.spotify','/org/mpris/MediaPlayer2','org.mpris.MediaPlayer2','Quit')
+    deadline=time.monotonic()+4
+    while any(w['address']==address for w in d.windows()):
+        if time.monotonic()>=deadline:raise CapabilityError('Spotify did not close for accessibility recovery. Restart Spotify and try again.')
+        time.sleep(.1)
+    d.launch_attempts.discard('spotify.desktop')
+    launched=d.launch('spotify.desktop')
+    if not launched.get('verified'):raise CapabilityError('Spotify did not reopen for accessibility recovery.')
+    address=launched['window']['address'];deadline=time.monotonic()+4
+    while not d.accessibility_registered(address):
+        if time.monotonic()>=deadline:raise CapabilityError('Spotify reopened but its native controls are still unavailable.')
+        time.sleep(.1)
+    return address
+
+
+def wait_for_controls(d,address,observation,select,message,seconds=8):
+    deadline=time.monotonic()+seconds
+    while True:
+        matches=select(observation['elements'])
+        if len(matches)==1:return observation,matches[0]
+        if len(matches)>1:raise CapabilityError('Spotify exposes multiple matching controls; no ambiguous action was taken.')
+        if time.monotonic()>=deadline:raise CapabilityError(message)
+        time.sleep(.15)
+        observation=d.observe(address)
+
+
 def play_selection(d,query):
     if 'spotify.desktop' not in d.apps:raise CapabilityError('Spotify is not installed.')
+    if query is not None and normalized(query).strip(' .!?') in GENERIC_MUSIC:
+        # The request names no artist/title. Resume the actual Spotify queue;
+        # do not search for the literal words 'some music'.
+        if not any(p['name']=='Spotify' for p in d.media_status()['players']):
+            launched=d.launch('spotify.desktop')
+            if not launched.get('verified'):raise CapabilityError('Spotify did not open.')
+        deadline=time.monotonic()+3
+        while not any(p['name']=='Spotify' for p in d.media_status()['players']):
+            if time.monotonic()>=deadline:raise CapabilityError('Spotify has not exposed its player yet.')
+            time.sleep(.1)
+        d.bus_call('org.mpris.MediaPlayer2.spotify','/org/mpris/MediaPlayer2','org.mpris.MediaPlayer2.Player','Play')
+        resumed=playing_progress(d,lambda p:bool(p.get('title')) and bool(p.get('track_id')))
+        if resumed:return resumed
+        # An empty/unavailable queue is handled through the real personal library.
+        query=None
     launched=d.launch('spotify.desktop')
     if not launched.get('verified'):raise CapabilityError('Spotify did not open.')
     address=launched['window']['address']
+    address=ensure_spotify_controls(d,address)
     o=d.observe(address)
     if query is not None:
-        field=next((n for n in o['elements'] if n.get('editable') and n.get('role') in ('entry','combo box') and 'play' in n.get('name','').lower()),None)
-        if not field:raise CapabilityError('Spotify search is not exposed. Enable native accessibility first.')
+        o,field=wait_for_controls(d,address,o,
+            lambda nodes:[n for n in nodes if n.get('editable') and n.get('role') in ('entry','combo box') and 'play' in n.get('name','').lower()],
+            'Spotify search did not become ready. Check its sign-in or loading screen.')
         o=d.fill_field(field['id'],field['name'],query,'Return')
     else:
-        candidates=[n for n in o['elements'] if n.get('role')=='button' and n.get('name','').startswith('Liked Songs') and 'table: Your Library' in n.get('context',[])]
-        if len(candidates)!=1:raise CapabilityError('Your personal Liked Songs entry is not uniquely visible in the library.')
-        entry=candidates[0];owner=entry['name'].rsplit(' • ',1)[-1]
+        o,entry=wait_for_controls(d,address,o,
+            lambda nodes:[n for n in nodes if n.get('role')=='button' and n.get('name','').startswith('Liked Songs') and 'table: Your Library' in n.get('context',[])],
+            'Your personal Liked Songs entry did not become visible in the library.')
+        owner=entry['name'].rsplit(' • ',1)[-1]
         o=d.click(entry['id'],entry['actions'][0],entry['name'])
     deadline=time.monotonic()+5
     chosen=None

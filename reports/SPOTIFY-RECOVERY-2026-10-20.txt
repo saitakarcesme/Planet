@@ -1,0 +1,64 @@
+Planet Spotify recovery — 2026-10-20
+
+OBSERVED USER FAILURE
+  The private request was “play some music on spotify”. The wildcard search
+  recipe treated “some music” as a song/artist query. The session accessibility
+  bus was also disabled, despite the Spotify launcher's renderer-accessibility
+  flag. Its process had no registered AT-SPI controls.
+  “open chatgpt app” also failed exact app resolution because of the suffix.
+
+CHANGES
+  Unspecified music requests resume Spotify's actual queue via MPRIS, without
+  focusing its window or searching literal generic words. An unavailable queue
+  falls back to the observed personal library. No artist or track is hard-coded.
+  Turkish Spotify aliases include both spotifyda and spotify'da spellings.
+  Native launch/observation enables the session accessibility bus first.
+  If flagged Spotify never attached, a single graceful MPRIS Quit/relaunch
+  recovers its controls. Healthy processes are not restarted. Search/library
+  fields must actually become ready before the recipe proceeds; a visible
+  startup window is insufficient. Target ambiguity stops instead of guessing.
+  Natural app/application/uygulaması suffixes resolve against the app catalog.
+
+FINAL VERIFICATION
+  70 Python unit tests passed, including generic music routing without UI,
+  same-track playback progress, readiness waiting, ambiguous controls, healthy
+  process preservation, bounded restart and native application name resolution.
+
+  Final live runs: 10/10 passed (5 warm + 5 recreated startup conditions).
+  Both runs independently checked Playing, matching artist where requested,
+  and advancing position after the bridge had completed.
+
+                                      Warm       Startup-recovery run
+  ABBA artist search                  3.350s     5.761s
+  Play some music on Spotify          0.766s     0.439s
+  Personal Liked Songs                3.111s     2.867s
+  Spotify'da bir şey çal              0.622s     0.436s
+  Queen artist search                 3.202s     4.390s
+
+  Times cover bridge startup through verified completion, not just Play input.
+  These tests do not prove every Spotify/account/network state will succeed.
+  Artist search and cold recovery remain above one second.
+
+  The initial five-case investigation passed 3/5; observing actual readiness
+  fixed the two missing-control failures. A first cold run passed 4/5; one rapid
+  pause/resume case changed to Paused after the bridge reported success. The
+  harness was corrected to wait for confirmed Paused state between requests.
+  Two subsequent complete runs passed all independent postconditions. This
+  isolates verified test preconditions; it is not a guarantee against later
+  external playback changes. Original exploratory evidence was preserved.
+
+  Audio volume/mute and prior focus were restored. Playback was left paused.
+  Sanitized results: reports/spotify-recovery-2026-10-20.json.
+  Private traces and fixtures: ignored output/spotify-recovery/.
+
+DESIGN EXPLORATION
+  design/explorations/command-v2/index.html contains four animated command-panel
+  and screen-edge-light studies. overview.png is its browser-rendered comparison.
+  These proposals do not replace the current installed interface.
+
+MODEL AVAILABILITY
+  Both local model endpoints were offline in this desktop session. The existing
+  guarded model-lab profile was started after checking available GPU memory.
+  H2O semantic pause completed in 0.435s; a general Qwen answer in 2.334s.
+  Both returned successful results. The existing profile still has no boot
+  autostart; the model-lab control start command is documented in README.txt.

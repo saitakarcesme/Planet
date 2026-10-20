@@ -41,7 +41,7 @@ for key,title,aliases in [
  ('repeat_off','Disable repeat',['repeat off','tekrari kapat']),
  ('liked','Play a personal liked song',['play my liked songs','begenilen sarkilarimdan birini cal','spotify begenilenlerden cal'])]:add('media.'+key,title,aliases)
 add('media.volume','Set player volume percent',['music volume {percent}','muzik sesini {percent} yap'],{'percent':'integer'})
-add('media.search','Find and play an artist or song in Spotify',['play {query} on spotify','spotify play {query}','spotifydan {query} sarkisi ac bir tane','spotifydan {query} cal','{query} cal'],{'query':'string'})
+add('media.search','Find and play an artist or song in Spotify',['play {query} on spotify','spotify play {query}','spotifydan {query} sarkisi ac bir tane','spotifydan {query} cal','spotifyda {query} cal',"spotify'da {query} cal",'spotifyda {query} ac',"spotify'da {query} ac",'{query} cal'],{'query':'string'})
 
 for key,tr in [('home','ev'),('downloads','indirilenler'),('desktop','masaustu'),('documents','belgeler'),('pictures','resimler'),('music','muzik'),('videos','videolar')]:
     add('files.'+key,'Open '+key+' folder',['open '+key+' folder',tr+' klasorunu ac'],folder=key)

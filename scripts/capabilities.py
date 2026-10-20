@@ -54,6 +54,7 @@ class Executor:
                  'calculator':'omacalc.desktop','hesap makinesi':'omacalc.desktop','vscode':'com.microsoft.VSCode.desktop',
                  'writer':'libreoffice-writer.desktop','chrome':'google-chrome.desktop'}
         term=normalized(app.strip(' "\'.!'))
+        term=re.sub(r'^(?:the )| (?:app|application|uygulamasi)$','',term)
         catalog=self.desktop.catalog()
         preferred=aliases.get(term)
         exact=[a['id'] for a in catalog if normalized(a['name'])==term or normalized(a['id'].removesuffix('.desktop'))==term or a['id']==preferred]
