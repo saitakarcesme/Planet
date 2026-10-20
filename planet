@@ -19,7 +19,8 @@ case "${1:-start}" in
       done
       echo 'Planet could not start.' >&2; exit 1
     fi ;;
-  demo|status|close|clear|cancel) exec quickshell ipc -p "$PLANET_ROOT/app" call planet "$1" ;;
+  status|close|clear|cancel) exec quickshell ipc -p "$PLANET_ROOT/app" call planet "$1" ;;
+  skills) exec python "$PLANET_ROOT/scripts/skills.py" ;;
   stop) exec quickshell ipc -p "$PLANET_ROOT/app" call planet quit ;;
-  *) echo 'Usage: ./planet [start|toggle|demo|status|close|clear|cancel|stop]' >&2; exit 2 ;;
+  *) echo 'Usage: ./planet [start|toggle|skills|status|close|clear|cancel|stop]' >&2; exit 2 ;;
 esac

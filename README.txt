@@ -5,20 +5,28 @@ CURRENT TARGET
   Quickshell 0.3.2 and Qt Quick. It is not a macOS build.
 
 RUN
-  ./planet start       Start with only the animated dot companion visible.
-  ./planet toggle      Open or close the floating conversation.
+  ./planet start       Start the invisible command overlay.
+  ./planet toggle      Open or close the centered command panel.
   ./planet cancel      Stop the current task; completed steps remain completed.
-  ./planet status      Print UI, task and drag state.
-  ./planet close       Collapse the conversation.
-  ./planet stop        Save the session and quit Planet.
-  ./planet demo        Run the explicitly labelled animation preview.
+  ./planet status      Print panel/task state.
+  ./planet close       Hide the panel.
+  ./planet clear       Clear the current result and draft when idle.
+  ./planet skills      Print the 100 typed capabilities and their aliases as JSON.
+  ./planet stop        Cancel any running task and quit.
 
-  The Wayland pointer helper is built locally on first start. Dependencies:
-  Quickshell, Python 3 with PyGObject/Gio/AT-SPI, wtype, xdotool, grim, tesseract with
-  English data, ImageMagick, a C compiler, pkg-config, wayland-client and wayland-scanner.
-  The development machine uses a signature-verified local xdotool package
-  under .build/x11/; other installations should provide xdotool on PATH.
-  Other dependencies are installed on the development machine. No root service is added.
+  Current machine: Super+Alt+P is already bound to ./planet toggle.
+  On another Hyprland installation, bind that chord to the absolute launcher
+  path using that installation's configuration syntax. This repo does not
+  install a global shortcut, autostart or system service automatically.
+
+  Dependencies: Quickshell 0.3.2, Python 3 with PyGObject/Gio/AT-SPI, wtype,
+  xdotool, grim, tesseract with English data, ImageMagick, C compiler, pkg-config,
+  wayland-client and wayland-scanner. Native recipes additionally use the
+  installed wpctl, nmcli, xdg-user-dir, git, foot and systemd user tools.
+  Editor/agent launch recipes require code, claude or codex on PATH.
+  The Wayland pointer helper is built locally on first start. This development
+  machine uses a signature-verified local xdotool package under .build/x11/;
+  other installations should provide xdotool on PATH. No root service is added.
 
 NATIVE ACCESSIBILITY
   Planet reads deep native AT-SPI control trees, retaining library/table/dialog
@@ -31,7 +39,7 @@ NATIVE ACCESSIBILITY
   This opt-in setup copies that installed desktop manifest into the user's
   applications directory and adds --force-renderer-accessibility. It also
   enables the session accessibility bus. It does not restart apps, modify the
-  packaged manifest, add an action recipe, or map requests to app shortcuts.
+  packaged manifest, change the command catalog.
   Wrapped launchers must be configured manually. The current Spotify launcher
   is configured this way, and a normal relaunch was tested.
   To undo a newly created override, remove that local desktop file; if it
@@ -40,32 +48,23 @@ NATIVE ACCESSIBILITY
   Chromium documents the flag at:
     https://www.chromium.org/developers/accessibility/testing/automated-testing/ax-inspect/
 
-CONTROLS
-  Drag the dots to move Planet across monitors. Click to open the chat.
-  Super+Alt+P toggles the chat through the existing local Hyprland binding.
-  During a task, clicking the companion/using that shortcut stops the task and
-  reveals the conversation. The square button and /stop also cancel work.
-  Enter submits; Shift+Enter adds a line; Esc collapses the chat.
-  Scroll on messages or drag the scrollbar; PageUp/PageDown also work.
-  /help, /clear, /motion, /demo and /error are explicit UI commands.
+CONTROLS AND DESIGN
+  Nothing is normally visible. Super+Alt+P opens one pale-gray, borderless
+  command panel on the pointer's monitor. It is centered, up to 780 px wide,
+  with a 24 px corner radius. All four edges of that monitor glow white.
+  Enter submits, Shift+Enter adds a line, Escape hides the panel.
+  /help explains controls; /skills lists the 100 built-in capabilities.
 
-DESIGN
-  Monochrome, borderless, floating messages with no parent background.
-  A 76 x 76 companion contains 31 irregularly placed white dots. Independent
-  size changes, drift and rotation keep the field animated. The continuous
-  minimum dot separation at this size is 2.17 px, including maximum drift.
-  Dots retain a visible minimum size throughout their animation. User messages
-  and the composer use pale gray with dark text. Send/stop glyphs are drawn
-  with rounded strokes/shapes instead of platform-dependent font characters.
-  Chat width is 320 px; history is capped at 360 px and scrolls. Composer
-  height grows from 38 to 76 px. Empty desktop space passes clicks through.
-  The overlay sits above application windows, including fullscreen windows.
-  Lock screens and compositor security surfaces are outside its control.
+  There is no pet, conversation chain or message persistence. Requested output
+  and errors replace the single result below the command field. The output
+  scrolls within a maximum 340 px viewport. Successful action-only requests
+  close silently. The user can enter Turkish; application copy is English.
 
-  Pointer input uses an unscaled, stationary surface separate from the
-  animation. The source surface retains the pointer grab throughout a drag,
-  including across monitors. Movement is applied directly without position
-  interpolation. The input mask expands only for the duration of a grab.
+  During native execution the card releases keyboard focus and hides, while
+  the edge glow stays visible. The shortcut reveals the Stop button again;
+  Stop or ./planet cancel cancels work. Completed side effects are not undone.
+  Only the card receives pointer input; all other desktop space passes through.
+  The overlay is above normal/fullscreen application windows, not lock screens.
 
 MODELS AND ROUTING
   H2O-Lightning: http://127.0.0.1:8741/v1/systemone
@@ -84,28 +83,29 @@ MODELS AND ROUTING
   are transient; they do not survive a reboot. No autostart is installed by
   Planet. README and reports describe the tested profile, not a speed promise.
 
-  1. H2O classifies the task from its meaning and recent conversation.
-  2. For a confident simple launch, H2O selects from the actual installed
-     application catalog. There are no phrase-to-app or phrase-to-URL maps.
-  3. Qwen handles new arguments, multi-step tasks, questions and writing.
-     It receives the available typed tools and observed desktop state.
-     H2O can select a relevant existing window for an initial native observation,
-     avoiding a Qwen turn just to choose that window. The installed app catalog
-     is fetched on demand; existing-window tasks do not carry it on every turn.
-     An observed editable field can be focused, replaced and confirmed in one
-     fill_field call. CEF fields with EDITABLE state use a focus-checked keyboard
-     fallback when they do not expose the EditableText interface.
-  4. Before a mutation, H2O checks the proposed step against the human request
-     and resolved target. Uncertain steps receive a second, tool-free Qwen
-     authorization assessment. Model confidence is not user permission.
-  5. Results return to the controller. Completion requires observed evidence
-     and an independent Qwen outcome assessment against the actual request;
-     unsupported or unverified work is reported explicitly.
-  Successful action-only requests finish silently, without automatic chat
-  confirmations or a translation pass. Requested information, generated text,
-  necessary questions and failures remain visible. Each model/tool duration
-  is recorded privately so playback onset and total verification time can be
-  distinguished. Multi-step native UI tasks do not have a one-second guarantee.
+  1. Fully matched English/Turkish aliases select one of 100 typed native
+     recipes without model inference. See design/CAPABILITIES.txt. Up to four
+     wholly recognized clauses can compose a task; a partially matched request
+     is never executed as a partial shortcut. Parameters retain original text.
+  2. H2O selects a known capability for unseen wording at confidence >= 0.97.
+     If that capability needs arguments, Qwen extracts a small typed object.
+     Missing/invalid arguments, uncertain or unknown requests fall through.
+  3. The general H2O/Qwen controller handles unfamiliar tasks and requested
+     writing through observed native controls and typed tools. It checks each
+     mutation against the request and assesses outcome evidence. There is no
+     automatic browser substitution or model-generated shell execution.
+  4. Known recipes verify native postconditions (window geometry, MPRIS state,
+     advancing playback, actual filesystem contents, etc.). They do not need a
+     model to reinterpret each deterministic step. Failed actions stop rather
+     than silently launching a second planner that might repeat the mutation.
+
+  Spotify recipes inspect the actual accessible native search/library controls.
+  Search terms are parameters, not hard-coded artist shortcuts. Personal Liked
+  Songs requires the user's library entry and collection owner, not a matching
+  public playlist. Playback success requires matching metadata and advancing
+  position. Native controls must be accessible and the account must be signed in.
+  Unknown desktop tasks still depend on model latency and accessibility coverage;
+  neither generic tasks nor arbitrary Spotify searches have a one-second promise.
 
 CAPABILITIES
   - Discover/open/focus installed native applications via desktop manifests.
@@ -154,49 +154,57 @@ BOUNDARIES AND LIMITATIONS
   a tool-free local English rewrite pass normalizes response prose before display.
 
 LOCAL DATA
-  .local-state.json retains up to 80 messages, draft, position and motion
-  preference. .planet-runs/ stores private request/tool traces for debugging.
-  output/ contains local benchmark fixtures, screenshots and raw evidence.
-  All are excluded from Git. Screenshots used for OCR are temporary and removed.
-  Reports committed under reports/ are aggregate/sanitized test evidence.
+  The current overlay keeps only the draft/result in memory, not a chat log.
+  Legacy .local-state.json is ignored and left untouched. .planet-runs/ stores
+  private request/tool traces. output/ contains private benchmark fixtures,
+  screenshots and raw evidence. These locations are excluded from Git.
+  Planet notes live under ~/.local/share/planet/notes; PLANET_DATA_DIR overrides
+  that location for tests. Notes use new private files and never overwrite.
+  Timers are transient planet-timer-* units in the current user's systemd session.
 
 VALIDATION
-  Latest latency/UI measurements: reports/LATENCY-UI-2026-10-20.txt.
-  Existing-app focus completed in 0.787s; a fresh artist-search trial reached
-  Playing in 19.293s. Replaying an already-selected artist is measured separately.
-  Arbitrary music searches have not reached the one-second target.
-  Latest native workflow results: reports/NATIVE-FOLLOWUP-2026-10-20.txt.
-  Personal Spotify collection playback passed 3/3 final reruns, new Writer
-  plain-text documents 2/2, and representative core tasks 11/11. The report
-  includes exploratory failures and the independent acceptance criteria.
-  reports/VALIDATION-2026-10-20.txt retains the historical baseline.
+  Latest: reports/COMMAND-CAPABILITIES-2026-10-20.txt and its aggregate JSON.
+  Final full run: 100 capabilities attempted, 98 passed, 2 unavailable because
+  this machine has no default microphone. Of the 98 successful operations,
+  96 completed in under 1 second; median full CLI latency was 0.2103 seconds.
+  Spotify artist search: 2.5112 seconds. Personal Liked Songs: 2.3163 seconds.
+  These are real bridge-process-to-verified-result timings on the current
+  prepared desktop, not cold-start guarantees or inference-only timings.
 
   python -m unittest discover -s tests -v
-  node tests/test_dots.cjs
   bash -n planet scripts/build-pointer
-  scripts/build-pointer
+  python -m py_compile scripts/*.py tests/*.py
 
   Explicit live trials (operate the real desktop and local models):
-    python tests/live_suite.py --tag my-pilot --sample
-    python tests/live_suite.py --tag my-full-run
-    python tests/live_drag.py --tag my-drag
-    python tests/live_drag.py --open-chat --tag my-open-drag
-  Use a fresh tag for each run; old evidence is not overwritten. The live suite
-  creates only its own output/live-fixtures/ tree. Runs containing music cases
-  mute media and pause playback before restoring the original volume. It does not test
-  external posting, payments, deletion, account changes or software installs.
+    python tests/live_capabilities.py --read-only --tag my-readonly-run
+    python tests/live_capabilities.py --all --tag my-full-run
+    python tests/live_ui.py --tag my-ui-run
+  Use fresh tags. Full trials create their own local fixtures and windows,
+  temporarily change audio/workspaces and restore settings. Playback is muted
+  during tests and left paused. Agent-terminal checks verify a visible terminal,
+  not authentication or a completed agent response. Two microphone operations
+  fail explicitly when no default source exists. No external posting, payments,
+  deletion, account changes or software installs are tested.
+
+  Older reports and tests/live_suite.py retain generic-controller history.
+  The old dot/drag tests and companion components are historical artifacts;
+  they are not the current UI's acceptance tests or loaded application assets.
 
 FILES
-  app/shell.qml         Overlay, persistence, model bridge events and controls
-  app/DotOrb.qml        Animated companion canvas
-  app/DotField.js       Deterministic irregular particle field
-  app/MessageBubble.qml Message layout
-  scripts/bridge.py     Local model routing, planning, validation and cancellation
-  scripts/desktop.py    Typed desktop, filesystem and media capabilities
+  app/shell.qml            Centered command overlay and bridge events
+  app/ActionGlyph.qml      Send/stop glyphs
+  scripts/skills.py        Exactly 100 typed capabilities and anchored aliases
+  scripts/fast.py          Alias, semantic and composite routing
+  scripts/capabilities.py  Native recipes and verified postconditions
+  scripts/music.py         Observed native Spotify recipes
+  scripts/ui_context.py    Capture target window and pointer monitor before focus
+  scripts/bridge.py        General local-model planning/validation/cancellation
+  scripts/desktop.py       Typed desktop, filesystem and media primitives
   scripts/accessibility.py Bounded native UI snapshots with control ancestry
-  scripts/pointer.c     Small native Wayland pointer transport
-  tests/                Unit, geometry and opt-in live acceptance checks
-  design/explorations/  Earlier design explorations, not live application assets
+  scripts/pointer.c        Native Wayland pointer transport
+  tests/                   Unit and opt-in live acceptance checks
+  design/CAPABILITIES.txt   Human-readable catalog
+  design/explorations/     Historical design explorations
 
 REFERENCES
   https://doc.qt.io/qt-6/qml-qtquick-mousearea.html

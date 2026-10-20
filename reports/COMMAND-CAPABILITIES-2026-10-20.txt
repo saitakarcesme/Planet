@@ -1,0 +1,82 @@
+Planet command panel and 100 native capabilities — 2026-10-20
+
+IMPLEMENTED
+  Exactly 100 typed native capabilities with 208 English/Turkish aliases.
+  Fully matched aliases execute without model inference. Up to four fully
+  recognized clauses compose a task; unknown/ambiguous requests fall back to
+  the local H2O/Qwen controller. Semantic selection uses a 0.97 threshold;
+  Qwen extracts arguments only when needed. Every recipe checks postconditions.
+  The full catalog is design/CAPABILITIES.txt, also available through /skills.
+
+  The new overlay is normally invisible. Super+Alt+P opens a centered 780 px
+  command panel on the pointer's monitor, with white glow on all four edges.
+  No pet or conversation history remains in the live UI. Output replaces the
+  previous result; action-only success closes silently. Output scrolls within
+  340 px. During desktop execution focus is released; Stop cancels the worker.
+
+FINAL LIVE CAPABILITY RUN
+  100 attempted; 98 successful; 2 unavailable because there is no default
+  microphone on this machine (mute microphone / unmute microphone).
+  These two operations report the missing device, not a successful mutation.
+  Of the 98 successful operations, 96 completed in less than one second.
+  Median successful full CLI latency: 0.2103 seconds.
+  Spotify artist search, ABBA: 2.5112 seconds.
+  Spotify personal Liked Songs: 2.3163 seconds.
+
+  Timings include a fresh bridge process, routing, native execution and outcome
+  verification. The desktop, app login and model services were already prepared.
+  They are not cold-start promises. Spotify checks matching track metadata and
+  advancing playback position; merely clicking Play is not a pass. Most other
+  trials use each executor's native postcondition; calculator, file, note and
+  music cases additionally check independent assertions in the harness.
+  Agent session cases verify the terminal window, not CLI authentication.
+
+OTHER EXECUTED CHECKS
+  36 read-only native trials: 36 passed.
+  Initial full run: 95/100 passed. Corrections addressed a missing left-neighbor
+  fixture, Spotify Stop reporting Paused, and VS Code's native window class.
+  A cleanup bug parsing a nonexistent microphone was fixed; that initial run's
+  fixture windows were manually cleaned up. Final full run restored settings.
+  Total across these three capability runs: 236 actual executions. The final
+  98/100 result, not the exploratory count, is the acceptance result.
+
+  11 semantic-selection-only cases: 11 expected choices/fallbacks, 0.181–0.229s.
+  Final live routing smoke, including bridge startup:
+    Two arithmetic capabilities chained: 0.2115s, results 5 and 56.
+    Unseen arithmetic phrasing with semantic argument extraction: 0.9265s, 512.
+    General Qwen answer outside the capability catalog: 1.4244s.
+  This does not benchmark arbitrary multi-step unknown desktop tasks.
+
+UI ACCEPTANCE
+  10 checks passed: invisible idle state; registered Super+Alt+P binding;
+  centering on each of two monitors; actual typed input/Enter and OCR-verified
+  arithmetic output; result replacement; real wheel scrolling within a bounded
+  result; cancelling a running local-model request; silent action completion;
+  and transparent empty desktop pixels with glow on all four edges.
+  Cancellation to idle: 0.164s. Result viewport: 340px; observed wheel scroll:432px.
+  The first UI harness run failed full-screen OCR segmentation, although the
+  captured result visibly contained 391. Cropping the actual panel for OCR
+  resolved the test measurement issue; the second complete run passed.
+  Virtual wtype events did not activate compositor global bindings in this
+  session. Binding registration and the configured toggle launcher were checked;
+  physical-keyboard activation was not automated. Actual field typing and Escape
+  were exercised. Quickshell loaded the final configuration without errors.
+
+REGRESSION / LIMITATIONS
+  60 Python unit tests passed. Typed argument validation, all documented aliases,
+  Unicode preservation, bounded arithmetic, non-overwriting notes, no partial
+  compound execution, semantic fallback and native verification are covered.
+  Existing general-controller regression tests also passed.
+  Spotify search remains above the requested one-second target. Native recipes
+  improve known actions; generic tasks retain model/accessibility latency.
+  Search is bounded to visible home files, excluding caches/dependencies, with
+  5,000-file / 2-second traversal limits. It is not an indexed whole-disk search.
+  Microphone functions remain untested with an actual default source present.
+
+EVIDENCE
+  reports/command-capabilities-2026-10-20.json contains sanitized individual
+  timings, UI checks and non-private routing results. Raw logs, app observations,
+  local fixture paths and screenshots remain ignored under output/capabilities/.
+  Private action traces remain ignored under .planet-runs/.
+  Test windows/timers were cleaned up, audio settings restored, playback paused.
+  The current command overlay is left running and collapsed for user testing.

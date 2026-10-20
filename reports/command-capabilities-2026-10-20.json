@@ -1,0 +1,727 @@
+{
+  "date": "2026-10-20",
+  "environment": "Current Linux / Hyprland 0.56.2, Quickshell 0.3.2, native Spotify, resident H2O on RTX 3090 GPU0 and HyperQwen on RTX 3090 GPU1",
+  "measurement": "Separate bridge process start to verified result, prepared desktop; not cold startup or audible-onset latency.",
+  "summary": {
+    "attempted": 100,
+    "passed": 98,
+    "unavailable": 2,
+    "successful_under_one_second": 96,
+    "successful_median_seconds": 0.2103
+  },
+  "capabilities": [
+    {
+      "id": "app.open",
+      "seconds": 0.2631,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "app.focus",
+      "seconds": 0.1998,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "window.maximize",
+      "seconds": 0.22,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "window.fullscreen",
+      "seconds": 0.2103,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "window.restore",
+      "seconds": 0.2069,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "window.float",
+      "seconds": 0.2074,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "window.tile",
+      "seconds": 0.2071,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "window.center",
+      "seconds": 0.2109,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "window.focus_left",
+      "seconds": 0.2094,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "window.move_left",
+      "seconds": 0.2089,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "window.focus_right",
+      "seconds": 0.2103,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "window.move_right",
+      "seconds": 0.2088,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "window.focus_up",
+      "seconds": 0.212,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "window.move_up",
+      "seconds": 0.2075,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "window.focus_down",
+      "seconds": 0.2117,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "window.move_down",
+      "seconds": 0.2076,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "window.wider",
+      "seconds": 0.2048,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "window.narrower",
+      "seconds": 0.2052,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "window.taller",
+      "seconds": 0.2077,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "window.shorter",
+      "seconds": 0.2061,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "media.play",
+      "seconds": 0.2359,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "media.pause",
+      "seconds": 0.4896,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "media.next",
+      "seconds": 0.2368,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "media.previous",
+      "seconds": 0.2403,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "media.stop",
+      "seconds": 0.4966,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "media.status",
+      "seconds": 0.1873,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "media.forward",
+      "seconds": 0.2345,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "media.back",
+      "seconds": 0.2473,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "media.shuffle_on",
+      "seconds": 0.2365,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "media.shuffle_off",
+      "seconds": 0.2355,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "media.repeat_on",
+      "seconds": 0.2435,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "media.repeat_off",
+      "seconds": 0.241,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "media.liked",
+      "seconds": 2.3163,
+      "pass": true,
+      "oracle": "independent MPRIS position and artist (search); runtime personal-collection evidence (liked)"
+    },
+    {
+      "id": "media.volume",
+      "seconds": 0.1958,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "media.search",
+      "seconds": 2.5112,
+      "pass": true,
+      "oracle": "independent MPRIS position and artist (search); runtime personal-collection evidence (liked)"
+    },
+    {
+      "id": "files.home",
+      "seconds": 0.3528,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "files.downloads",
+      "seconds": 0.3437,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "files.desktop",
+      "seconds": 0.3458,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "files.documents",
+      "seconds": 0.3502,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "files.pictures",
+      "seconds": 0.346,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "files.music",
+      "seconds": 0.3496,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "files.videos",
+      "seconds": 0.3535,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "files.open",
+      "seconds": 0.3483,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "files.mkdir",
+      "seconds": 0.1928,
+      "pass": true,
+      "oracle": "independent directory stat"
+    },
+    {
+      "id": "files.list",
+      "seconds": 0.1917,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "files.find_file",
+      "seconds": 0.1953,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "files.find_folder",
+      "seconds": 0.4741,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "files.recent",
+      "seconds": 0.2285,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "files.info",
+      "seconds": 0.1887,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "files.read",
+      "seconds": 0.1887,
+      "pass": true,
+      "oracle": "independent file bytes"
+    },
+    {
+      "id": "system.volume_up",
+      "seconds": 0.2085,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "system.volume_down",
+      "seconds": 0.2093,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "system.mute",
+      "seconds": 0.2141,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "system.unmute",
+      "seconds": 0.2115,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "system.mic_mute",
+      "seconds": 0.1956,
+      "pass": false,
+      "oracle": "native postcondition in executor",
+      "unavailable": "No default microphone"
+    },
+    {
+      "id": "system.mic_unmute",
+      "seconds": 0.1949,
+      "pass": false,
+      "oracle": "native postcondition in executor",
+      "unavailable": "No default microphone"
+    },
+    {
+      "id": "system.audio",
+      "seconds": 0.2011,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "system.memory",
+      "seconds": 0.1908,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "system.cpu",
+      "seconds": 0.1873,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "system.disk",
+      "seconds": 0.1875,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "system.battery",
+      "seconds": 0.1895,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "system.network",
+      "seconds": 0.207,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "system.uptime",
+      "seconds": 0.1916,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "system.time",
+      "seconds": 0.1927,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "system.volume",
+      "seconds": 0.2062,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "workspace.switch",
+      "seconds": 0.2045,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "workspace.move",
+      "seconds": 0.2105,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "workspace.next",
+      "seconds": 0.212,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "workspace.previous",
+      "seconds": 0.215,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "workspace.list",
+      "seconds": 0.1935,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "monitor.next",
+      "seconds": 0.2033,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "monitor.previous",
+      "seconds": 0.2026,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "monitor.move_next",
+      "seconds": 0.2114,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "monitor.move_previous",
+      "seconds": 0.2124,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "monitor.list",
+      "seconds": 0.197,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "dev.terminal",
+      "seconds": 0.2419,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "dev.editor",
+      "seconds": 0.9961,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "dev.git_status",
+      "seconds": 0.1991,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "dev.git_branch",
+      "seconds": 0.2306,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "dev.git_log",
+      "seconds": 0.2243,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "dev.git_diff",
+      "seconds": 0.2073,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "dev.git_remotes",
+      "seconds": 0.2041,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "dev.claude",
+      "seconds": 0.2495,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "dev.codex",
+      "seconds": 0.2687,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "dev.project",
+      "seconds": 0.1905,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "search.apps",
+      "seconds": 0.1934,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "search.windows",
+      "seconds": 0.193,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "search.projects",
+      "seconds": 0.2478,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "search.contents",
+      "seconds": 0.3862,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "search.documents",
+      "seconds": 0.24,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "search.pictures",
+      "seconds": 0.2276,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "search.music",
+      "seconds": 0.2296,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "search.videos",
+      "seconds": 0.2267,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "search.large",
+      "seconds": 0.2331,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "search.size",
+      "seconds": 0.1929,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "helper.calculate",
+      "seconds": 0.1893,
+      "pass": true,
+      "oracle": "independent arithmetic value"
+    },
+    {
+      "id": "helper.note",
+      "seconds": 0.1906,
+      "pass": true,
+      "oracle": "independent note bytes"
+    },
+    {
+      "id": "helper.notes",
+      "seconds": 0.1886,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "helper.timer",
+      "seconds": 0.2035,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    },
+    {
+      "id": "helper.timers",
+      "seconds": 0.1912,
+      "pass": true,
+      "oracle": "native postcondition in executor"
+    }
+  ],
+  "ui": [
+    {
+      "case": "normally-invisible",
+      "passed": true
+    },
+    {
+      "case": "shortcut-registered",
+      "passed": true,
+      "note": "Compositor registration checked; virtual wtype events do not trigger global bindings on this session."
+    },
+    {
+      "case": "centered-on-HDMI-A-1",
+      "passed": true
+    },
+    {
+      "case": "centered-on-DP-2",
+      "passed": true
+    },
+    {
+      "case": "typed-command-returns-answer",
+      "passed": true
+    },
+    {
+      "case": "result-replaces-previous",
+      "passed": true
+    },
+    {
+      "case": "bounded-scrollable-result",
+      "passed": true,
+      "height": 340,
+      "scrollY": 432
+    },
+    {
+      "case": "cancel-running-model",
+      "passed": true,
+      "cancel_to_idle_s": 0.164
+    },
+    {
+      "case": "action-closes-silently",
+      "passed": true
+    },
+    {
+      "case": "four-edge-glow-transparent-desktop",
+      "passed": true,
+      "alpha_samples": [
+        0.478431,
+        0.478431,
+        0.478431,
+        0.478431,
+        0.0
+      ]
+    }
+  ],
+  "routing_smoke": [
+    {
+      "request": "calculate 2+3 and calculate 7*8",
+      "seconds": 0.2115,
+      "result": {
+        "type": "result",
+        "ok": true,
+        "message": "5\n\n56",
+        "code": "done"
+      },
+      "capabilities": [
+        {
+          "type": "capability",
+          "id": "helper.calculate",
+          "source": "alias-chain",
+          "elapsed": 0.0996
+        }
+      ]
+    },
+    {
+      "request": "Please calculate (23 + 41) * 8",
+      "seconds": 0.9265,
+      "result": {
+        "type": "result",
+        "ok": true,
+        "message": "512",
+        "code": "done"
+      },
+      "capabilities": [
+        {
+          "type": "capability",
+          "id": "helper.calculate",
+          "source": "semantic",
+          "elapsed": 0.8244
+        }
+      ]
+    },
+    {
+      "request": "Explain in one English sentence why the sky looks blue.",
+      "seconds": 1.4244,
+      "result": {
+        "type": "result",
+        "ok": true,
+        "message": "The sky looks blue because sunlight scatters off air molecules, and shorter blue wavelengths scatter more strongly than longer red ones, so blue light reaches our eyes from all directions.",
+        "code": "answer"
+      },
+      "capabilities": []
+    }
+  ],
+  "semantic_selection": {
+    "cases": 11,
+    "passed": 11,
+    "seconds_range": [
+      0.181,
+      0.229
+    ]
+  },
+  "unit_tests": 60
+}

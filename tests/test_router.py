@@ -112,7 +112,9 @@ class ControllerTests(unittest.TestCase):
         return c
 
     def test_examples_cannot_execute_without_model(self):
-        with patch('scripts.bridge.generator', side_effect=RuntimeError('Model unavailable')), patch('scripts.desktop.Gio.AppInfo.get_all', return_value=[]), patch('subprocess.Popen') as process:
+        # Unknown tasks still require the general planner; approved native
+        # capabilities are tested separately and intentionally work offline.
+        with patch('scripts.fast.attempt', return_value=None), patch('scripts.bridge.generator', side_effect=RuntimeError('Model unavailable')), patch('scripts.desktop.Gio.AppInfo.get_all', return_value=[]), patch('subprocess.Popen') as process:
             for text in ['GitHub aç', 'Open Spotify', 'Create a folder', 'github; touch /tmp/planet-injected']:
                 with contextlib.redirect_stdout(io.StringIO()) as output:
                     run(text)

@@ -1,0 +1,206 @@
+Planet — 100 built-in capabilities
+
+Aliases accept English and Turkish. Values in braces are parameters.
+Unknown or compound requests use the general model planner.
+Native app availability and application state are checked at execution time.
+
+001. app.open — Open an installed native application
+     open {app} | {app} ac
+002. app.focus — Focus an existing application
+     focus {app} | {app} uygulamasina gec
+003. window.maximize — Maximize current window
+     maximize window | pencereyi buyut
+004. window.fullscreen — Fullscreen current window
+     fullscreen window | tam ekran yap
+005. window.restore — Restore current window
+     restore window | tam ekrandan cik
+006. window.float — Float current window
+     float window | pencereyi yuzdur
+007. window.tile — Tile current window
+     tile window | pencereyi dose
+008. window.center — Center floating window
+     center window | pencereyi ortala
+009. window.focus_left — Focus left window
+     focus left window | sol pencereye gec
+010. window.move_left — Move current window left
+     move window left | pencereyi sol tarafa tasi
+011. window.focus_right — Focus right window
+     focus right window | sag pencereye gec
+012. window.move_right — Move current window right
+     move window right | pencereyi sag tarafa tasi
+013. window.focus_up — Focus up window
+     focus up window | ust pencereye gec
+014. window.move_up — Move current window up
+     move window up | pencereyi ust tarafa tasi
+015. window.focus_down — Focus down window
+     focus down window | alt pencereye gec
+016. window.move_down — Move current window down
+     move window down | pencereyi alt tarafa tasi
+017. window.wider — Make current window wider
+     make window wider | pencereyi genislet
+018. window.narrower — Make current window narrower
+     make window narrower | pencereyi daralt
+019. window.taller — Make current window taller
+     make window taller | pencereyi uzat
+020. window.shorter — Make current window shorter
+     make window shorter | pencereyi kisalt
+021. media.play — Resume media
+     resume music | play music | muzigi devam ettir | muzik cal
+022. media.pause — Pause media
+     pause music | muzigi duraklat | muzigi durdur
+023. media.next — Next track
+     next track | sonraki sarki
+024. media.previous — Previous track
+     previous track | onceki sarki
+025. media.stop — Stop media
+     stop playback | calmayi durdur
+026. media.status — Current track information
+     what is playing | current track | ne caliyor
+027. media.forward — Seek forward ten seconds
+     skip forward | 10 saniye ileri sar
+028. media.back — Seek back ten seconds
+     skip back | 10 saniye geri sar
+029. media.shuffle_on — Enable shuffle
+     shuffle on | karisik calma ac
+030. media.shuffle_off — Disable shuffle
+     shuffle off | karisik calma kapat
+031. media.repeat_on — Repeat playlist
+     repeat playlist | liste tekrarini ac
+032. media.repeat_off — Disable repeat
+     repeat off | tekrari kapat
+033. media.liked — Play a personal liked song
+     play my liked songs | begenilen sarkilarimdan birini cal | spotify begenilenlerden cal
+034. media.volume — Set player volume percent
+     music volume {percent} | muzik sesini {percent} yap
+035. media.search — Find and play an artist or song in Spotify
+     play {query} on spotify | spotify play {query} | spotifydan {query} sarkisi ac bir tane | spotifydan {query} cal | {query} cal
+036. files.home — Open home folder
+     open home folder | ev klasorunu ac
+037. files.downloads — Open downloads folder
+     open downloads folder | indirilenler klasorunu ac
+038. files.desktop — Open desktop folder
+     open desktop folder | masaustu klasorunu ac
+039. files.documents — Open documents folder
+     open documents folder | belgeler klasorunu ac
+040. files.pictures — Open pictures folder
+     open pictures folder | resimler klasorunu ac
+041. files.music — Open music folder
+     open music folder | muzik klasorunu ac
+042. files.videos — Open videos folder
+     open videos folder | videolar klasorunu ac
+043. files.open — Open a folder
+     open folder {path} | {path} klasorunu ac
+044. files.mkdir — Create a folder
+     create folder {path} | {path} klasoru olustur
+045. files.list — List folder contents
+     list folder {path} | {path} klasorunu listele
+046. files.find_file — Find a file by name
+     find file {query} | {query} dosyasini bul
+047. files.find_folder — Find a folder by name
+     find folder {query} | {query} klasorunu bul
+048. files.recent — List recently modified files
+     recent files | son dosyalar
+049. files.info — Read file metadata
+     file info {path} | {path} dosya bilgisi
+050. files.read — Read a local text file
+     read file {path} | {path} dosyasini oku
+051. system.volume_up — Increase output volume by five percent
+     volume up | sesi arttir
+052. system.volume_down — Decrease output volume by five percent
+     volume down | sesi azalt
+053. system.mute — Mute output audio
+     mute sound | sesi kapat
+054. system.unmute — Unmute output audio
+     unmute sound | sesi ac
+055. system.mic_mute — Mute microphone
+     mute microphone | mikrofonu kapat
+056. system.mic_unmute — Unmute microphone
+     unmute microphone | mikrofonu ac
+057. system.audio — Read audio levels
+     audio status | ses durumu
+058. system.memory — Read memory usage
+     memory usage | ram kullanimi
+059. system.cpu — Read CPU load
+     cpu load | islemci yuku
+060. system.disk — Read free disk space
+     free disk space | bos disk alani
+061. system.battery — Read battery state
+     battery status | pil durumu
+062. system.network — Read network connections
+     network status | ag durumu
+063. system.uptime — Read system uptime
+     system uptime | sistem calisma suresi
+064. system.time — Read local date and time
+     what time is it | saat kac
+065. system.volume — Set output volume percent
+     set volume {percent} | sesi {percent} yap
+066. workspace.switch — Switch to workspace
+     workspace {number} | calisma alani {number}
+067. workspace.move — Move current window to workspace
+     move window to workspace {number} | pencereyi {number} calisma alanina tasi
+068. workspace.next — Next existing workspace
+     next workspace | sonraki calisma alani
+069. workspace.previous — Previous existing workspace
+     previous workspace | onceki calisma alani
+070. workspace.list — List workspaces
+     list workspaces | calisma alanlarini listele
+071. monitor.next — Focus next monitor
+     next monitor | sonraki ekrana gec
+072. monitor.previous — Focus previous monitor
+     previous monitor | onceki ekrana gec
+073. monitor.move_next — Move window to next monitor
+     move window to next monitor | pencereyi sonraki ekrana tasi
+074. monitor.move_previous — Move window to previous monitor
+     move window to previous monitor | pencereyi onceki ekrana tasi
+075. monitor.list — List monitor geometry
+     list monitors | ekranlari listele
+076. dev.terminal — Open terminal in folder
+     terminal in {path} | {path} icinde terminal ac
+077. dev.editor — Open folder in code editor
+     edit project {path} | {path} projesini editorde ac
+078. dev.git_status — Git working tree status
+     git status {path} | {path} git durumu
+079. dev.git_branch — Read Git branch
+     git branch {path} | {path} git dali
+080. dev.git_log — Read recent Git commits
+     git log {path} | {path} son commitler
+081. dev.git_diff — Read Git diff
+     git diff {path} | {path} degisiklikleri
+082. dev.git_remotes — Read Git remotes
+     git remotes {path} | {path} uzak repolar
+083. dev.claude — Open interactive Claude session in folder
+     claude in {path} | {path} icinde claude ac
+084. dev.codex — Open interactive Codex session in folder
+     codex in {path} | {path} icinde codex ac
+085. dev.project — Inspect project manifests
+     inspect project {path} | {path} projesini incele
+086. search.apps — Find installed applications
+     find app {query} | {query} uygulamasini bul
+087. search.windows — Find open windows
+     find window {query} | {query} penceresini bul
+088. search.projects — Find local Git projects
+     find projects | projeleri bul
+089. search.contents — Search plain text contents
+     search text {query} | metin ara {query}
+090. search.documents — Find documents by name
+     find document {query} | belge ara {query}
+091. search.pictures — Find images by name
+     find image {query} | resim ara {query}
+092. search.music — Find local audio by name
+     find audio {query} | ses dosyasi ara {query}
+093. search.videos — Find local video by name
+     find video {query} | video ara {query}
+094. search.large — Find largest local files
+     find large files | buyuk dosyalari bul
+095. search.size — Measure folder size
+     folder size {path} | {path} klasor boyutu
+096. helper.calculate — Calculate an arithmetic expression
+     calculate {expression} | hesapla {expression}
+097. helper.note — Save a new plain-text note
+     note {text} | not al {text}
+098. helper.notes — List Planet notes
+     list notes | notlari listele
+099. helper.timer — Start a timer in minutes
+     timer {minutes} | {minutes} dakika zamanlayici
+100. helper.timers — List Planet timers
+     list timers | zamanlayicilari listele

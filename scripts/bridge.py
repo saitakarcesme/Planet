@@ -469,7 +469,7 @@ class Controller:
         path.chmod(0o600)
 
 
-def run(text, history=None):
+def run(text, history=None, context=None):
     controller = None
     lock_path = ROOT/'.planet-controller.lock'
     with lock_path.open('w') as lock:
@@ -483,6 +483,22 @@ def run(text, history=None):
         signal.signal(signal.SIGTERM, cancel)
         try:
             if not text.strip(): raise ValueError('Enter a request first.')
+            if __package__:
+                from .fast import attempt
+                from .skills import SKILLS
+            else:
+                sys.path.insert(0, str(ROOT))
+                from scripts.fast import attempt
+                from scripts.skills import SKILLS
+            if text.strip() == '/skills':
+                emit('result', ok=True, code='answer', message='\n'.join(
+                    f"{i+1:02d}. {s['title']}\n    {s['aliases'][0]}" for i,s in enumerate(SKILLS)))
+                return
+            fast = attempt(text, emit, context=context)
+            if fast is not None:
+                ok, message, code = fast
+                emit('result', ok=ok, message=message, code=code)
+                return
             controller = Controller(text, history)
             ok, message, code = controller.run()
             emit('result', ok=ok, message=message, code=code)
@@ -499,4 +515,4 @@ if __name__ == '__main__':
         run(sys.argv[1])
     else:
         request = json.loads(sys.stdin.readline())
-        run(request.get('text', ''), request.get('history', []))
+        run(request.get('text', ''), request.get('history', []), request.get('context'))
