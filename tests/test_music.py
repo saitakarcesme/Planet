@@ -5,6 +5,18 @@ from scripts.capabilities import CapabilityError,Executor
 from scripts.skills import match
 
 class MusicTests(unittest.TestCase):
+    def test_generic_play_opens_spotify_if_no_player_exists(self):
+        d=Mock();d.media_status.return_value={'players':[]}
+        with patch('scripts.music.play_selection',return_value={'verified':True}) as play:
+            self.assertTrue(Executor(d).run('media.play',{})['verified'])
+        play.assert_called_once_with(d,'some music')
+
+    def test_generic_play_checks_spotify_progress(self):
+        d=Mock();d.media_status.return_value={'players':[{'name':'Spotify'}]}
+        with patch('scripts.music.play_selection',side_effect=CapabilityError('No progress')):
+            with self.assertRaisesRegex(CapabilityError,'No progress'):
+                Executor(d).run('media.play',{})
+
     def test_unspecified_music_resumes_without_literal_search(self):
         for query in ['some music','something','bir şey','bir şarkı']:
             d=Mock();d.apps={'spotify.desktop':Mock()};d.launch.return_value={'verified':True,'window':{'address':'0x1'}}
@@ -63,7 +75,7 @@ class MusicTests(unittest.TestCase):
     def test_app_suffix_resolves_catalog_not_invented_executable(self):
         d=Mock();d.catalog.return_value=[{'id':'chatgpt.desktop','name':'ChatGPT'}]
         e=Executor(d)
-        for name in ['chatgpt app','the ChatGPT application','ChatGPT uygulaması']:
+        for name in ['chatgpt app','the ChatGPT application','ChatGPT uygulaması','chatgpt.desktop']:
             self.assertEqual(e.app_id(name),'chatgpt.desktop')
 
 if __name__=='__main__':unittest.main()

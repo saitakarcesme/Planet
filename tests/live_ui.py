@@ -48,14 +48,14 @@ def main():
                 pointer(monitor['x']+monitor['width']/monitor['scale']/2,monitor['y']+monitor['height']/monitor['scale']/2)
                 ipc('toggle');wait(lambda:state()['opened']);time.sleep(.35)
                 p=panel();c=p['card']
-                record('centered-on-'+monitor['name'],p['screen']==monitor['name'] and c['width']==min(780,p['width']-64) and abs(c['x']+c['width']/2-p['width']/2)<=1 and abs(c['y']+c['height']/2-p['height']/2)<=1 and c['visible'] and p['glow']==1)
+                record('centered-on-'+monitor['name'],p['screen']==monitor['name'] and c['width']==min(720,p['width']-64) and c['height']==62 and abs(c['x']+c['width']/2-p['width']/2)<=1 and abs(c['y']+c['height']/2-p['height']/2)<=1 and c['visible'] and p['glow']==1)
                 ipc('capture',str(out/('panel-'+monitor['name']+'.png')))
                 key('-k','Escape');wait(lambda:not state()['opened'])
             ipc('toggle');wait(lambda:state()['opened']);time.sleep(.2)
             key('Calculate 17 * 23');key('-k','Return');wait(lambda:state()['phase']=='success' and not state()['busy'])
             ipc('capture',str(out/'result.png'));time.sleep(.2)
             c=panel()['card']
-            subprocess.run(['magick',str(out/'result.png'),'-crop',f"{int(c['width'])}x{int(c['height'])}+{int(c['x'])}+{int(c['y'])}",'+repage','-background','white','-alpha','remove','-resize','200%',str(out/'result-ocr.png')],check=True)
+            subprocess.run(['magick',str(out/'result.png'),'-crop',f"{int(c['width'])}x{int(c['height'])}+{int(c['x'])}+{int(c['y'])}",'+repage','-background','#202020','-alpha','remove','-negate','-resize','200%',str(out/'result-ocr.png')],check=True)
             text=subprocess.check_output(['tesseract',str(out/'result-ocr.png'),'stdout','--psm','6'],stderr=subprocess.DEVNULL,text=True)
             record('typed-command-returns-answer','391' in text and state()['output']==3 and state()['history']==0)
             key('Calculate 2 + 3');key('-k','Return');wait(lambda:not state()['busy'] and state()['output']==1)

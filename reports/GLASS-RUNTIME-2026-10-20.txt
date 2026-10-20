@@ -1,0 +1,106 @@
+Planet dark glass / native reliability — 2026-10-20
+
+IMPLEMENTED
+  The live Quickshell overlay now uses a 720 x 62 px initial dark glass command
+  field, 18 px corners, no enclosing stroke and grayscale send/stop glyphs.
+  A targeted Hyprland layer rule blurs the command surface while the rest of
+  the desktop remains transparent and click-through. Four narrow GPU-shaded
+  strips carry a moving white/gray edge glow; hidden animation is stopped.
+  The normal state remains completely invisible. No pet or conversation chain.
+
+  planet-models.service is installed and enabled in the user's systemd manager.
+  It adopts healthy models, starts the existing resident pair at login, and
+  recovers after three failed health checks. It only calls the existing lab
+  controller, which owns named services and refuses occupied ports or inadequate
+  GPU/RAM capacity. It does not evict unrelated workloads.
+  Shared inference leases prevent recovery during an active model request.
+  Model-dependent requests wait with a visible starting state; deterministic
+  native capabilities remain usable while models are offline.
+
+  Literal music-search aliases now reject personal-library/playlist qualifiers
+  and extra conditions. Unspecified Spotify music uses a separate semantic
+  scope gate and resumes the native queue without Qwen generation.
+  Named music still extracts a typed target. Unknown/qualified requests stay
+  with the general planner. The three-way scope threshold (0.90) is separate
+  from the 101-way capability threshold (0.97).
+  Generic play opens Spotify when no player exists and requires progressing
+  playback, not merely a successful input event or a static Playing flag.
+  Application wildcard slots are checked against the installed catalog before
+  direct execution; descriptive/polite wording goes to semantic resolution.
+
+VERIFICATION
+  83 unit tests passed. Python compilation, shell syntax and git diff checks passed.
+  9 live UI checks passed across both 1920 x 1080 monitors, including typed
+  calculation/OCR, replacing results, bounded scrolling, cancellation and silent
+  action completion. Global chord registration was checked; virtual keystrokes
+  do not trigger the physical global binding in this session.
+
+  20 read-only local-model routing checks passed. These include Turkish/English
+  paraphrases and rejection of seven qualified/compound requests from the fast
+  route. They test selection, not completion of those complex requests.
+
+  14 final real Spotify trials passed:
+    8 language variations with ready Spotify:
+      Turkish unspecified music                     0.770 s
+      English unspecified music                     0.705 s
+      ABBA conversational request                   3.177 s
+      Personal Liked Songs, English                 2.360 s
+      Personal Liked Songs, Turkish                 2.399 s
+      Queen conversational request                  3.120 s
+      ABBA Turkish request                          3.091 s
+      Another unspecified music phrasing            0.674 s
+    5 cases after starting Spotify with accessibility disabled:
+      ABBA, including native accessibility recovery 6.388 s
+      Unspecified music                             0.438 s
+      Personal Liked Songs                          2.855 s
+      Turkish unspecified music                     0.436 s
+      Queen                                         3.319 s
+    Spotify initially closed, generic "play music"   1.125 s
+  An independent post-action MPRIS observation checked advancing position and
+  artist where specified. Personal-library cases additionally checked the
+  actual currently playing row inside the native Liked Songs table.
+  Audio/focus were restored; playback was left paused.
+
+  2 real native application paraphrases passed:
+    "open Spotify please"                           2.472 s
+    Turkish request to open the Spotify application  1.173 s
+  Both checked the actual active native window, without browser substitution.
+
+  Failure injection: stopped the owned H2O service. The supervisor rebuilt the
+  resident pair and the waiting Qwen answer completed in 77.963 s, with a visible
+  starting event. While H2O was down, a native calculation completed in 0.187 s.
+  Restarting the supervisor itself preserved all healthy model process IDs.
+  Startup enablement was checked; the physical machine was NOT rebooted.
+
+  Two captured animation frames differed (normalized RMSE 0.011713). A short
+  process-CPU sample measured 0.00% of one core hidden and 3.67% while open.
+  These are three-second samples, not a long-term CPU/GPU power benchmark.
+  Actual desktop capture confirmed localized glass blur and grayscale edge light.
+
+DEVELOPMENT FINDINGS
+  Initial language trials worked but sometimes took 6–28 seconds: a reused
+  confidence threshold sent the smaller scope gate to the full planner.
+  The separately tested scope gate removed that unnecessary generation.
+  An early independent Liked Songs oracle incorrectly looked for a Play button
+  after playback. Spotify changes the row to Pause while playing. The final
+  oracle checks that playing row and the actual collection ancestry.
+
+LIMITS
+  This fixes the observed lifecycle, literal-search routing and native playback
+  failures. It is not a guarantee for every phrasing, account, Spotify UI version
+  or arbitrary desktop task. Sign-in/network failures and unavailable controls
+  still produce explicit errors. Generic tasks can take longer.
+  A full cold model recovery takes about 78 seconds on this machine; ordinary
+  warm commands do not load the models on every request.
+  Earlier 100-capability results remain historical prepared-state measurements;
+  two microphone capabilities remain unavailable without a default microphone.
+
+PRIVATE EVIDENCE (Git-ignored)
+  output/capabilities/dark-glass-final/
+  output/spotify-recovery/glass-paraphrases-final/
+  output/spotify-recovery/glass-cold-final/
+  output/spotify-recovery/glass-closed-final/
+  output/routing/scope-final/
+  output/runtime/recovery-01/
+  output/glass/
+  .planet-runs/

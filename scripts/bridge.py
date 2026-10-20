@@ -9,6 +9,7 @@ import sys
 import time
 import urllib.error
 import urllib.request
+from contextlib import ExitStack
 
 if __package__:
     from .desktop import Desktop, ROOT
@@ -471,6 +472,7 @@ class Controller:
 
 def run(text, history=None, context=None):
     controller = None
+    model_scope = ExitStack()
     lock_path = ROOT/'.planet-controller.lock'
     with lock_path.open('w') as lock:
         try:
@@ -484,16 +486,22 @@ def run(text, history=None, context=None):
         try:
             if not text.strip(): raise ValueError('Enter a request first.')
             if __package__:
-                from .fast import attempt
+                from .fast import attempt, resolved_plan
                 from .skills import SKILLS
+                from .model_runtime import model_session
             else:
                 sys.path.insert(0, str(ROOT))
-                from scripts.fast import attempt
+                from scripts.fast import attempt, resolved_plan
                 from scripts.skills import SKILLS
+                from scripts.model_runtime import model_session
             if text.strip() == '/skills':
                 emit('result', ok=True, code='answer', message='\n'.join(
                     f"{i+1:02d}. {s['title']}\n    {s['aliases'][0]}" for i,s in enumerate(SKILLS)))
                 return
+            # Known native actions remain available even while models warm up.
+            # Unknown language waits before any inference or desktop mutation.
+            if resolved_plan(text) is None:
+                model_scope.enter_context(model_session(emit))
             fast = attempt(text, emit, context=context)
             if fast is not None:
                 ok, message, code = fast
@@ -508,6 +516,7 @@ def run(text, history=None, context=None):
             emit('result', ok=False, code='unavailable', message='The task stopped: '+str(error)[:350]+'. No further action was performed.')
         finally:
             if controller: controller.save_trace()
+            model_scope.close()
 
 
 if __name__ == '__main__':

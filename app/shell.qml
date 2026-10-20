@@ -136,31 +136,20 @@ ShellRoot {
             Item {
                 id:scene
                 anchors.fill:parent
-                // Layered 1px strokes form an inward, neutral white glow. The
-                // input region excludes these edges so the desktop stays usable.
-                Item {
+                EdgeGlow {
                     anchors.fill:parent
                     opacity:panel.active ? root.glow : 0
                     visible:opacity>0
-                    Repeater {
-                        model:18
-                        Rectangle {
-                            required property int index
-                            anchors.fill:parent; anchors.margins:index
-                            color:"transparent"; border.width:1
-                            border.color:Qt.rgba(1,1,1,0.48*Math.exp(-index/4.1))
-                            radius:Math.max(0,10-index/2)
-                        }
-                    }
+                    animate:visible && root.motion
                 }
                 Rectangle {
                     id:card
-                    width:Math.min(780,panel.width-64)
+                    width:Math.min(720,panel.width-64)
                     height:compose.height+(root.output ? resultScroll.height+32 : 0)+(root.busy ? 30 : 0)
                     x:Math.round((panel.width-width)/2)
                     y:Math.round((panel.height-height)/2)
-                    radius:24
-                    color:"#eeeeef"
+                    radius:18
+                    color:"#c91c1c1c"
                     visible:panel.active && root.opened && !root.suspended
                     opacity:visible ? 1 : 0
                     scale:visible ? 1 : 0.985
@@ -168,18 +157,18 @@ ShellRoot {
                     Item {
                         id:compose
                         width:parent.width
-                        height:Math.max(84,Math.min(156,editor.contentHeight+48))
+                        height:Math.max(62,Math.min(134,editor.contentHeight+36))
                         Flickable {
                             id:inputScroll
-                            x:26; y:24; width:parent.width-104; height:parent.height-48
+                            x:22; y:18; width:parent.width-88; height:parent.height-36
                             contentWidth:width; contentHeight:editor.contentHeight
                             clip:true
                             TextEdit {
                                 id:editor
                                 width:inputScroll.width
                                 text:root.draft
-                                color:"#18181b"; selectionColor:"#c5c5cc"; selectedTextColor:"#111114"
-                                font.family:"Inter"; font.pixelSize:21
+                                color:"#f1f1f1"; selectionColor:"#666666"; selectedTextColor:"#ffffff"
+                                font.family:"Inter"; font.pixelSize:20
                                 wrapMode:TextEdit.Wrap; textFormat:TextEdit.PlainText; selectByMouse:true
                                 readOnly:root.busy
                                 onTextChanged: { if(text.length>4000) text=text.slice(0,4000); root.draft=text; }
@@ -194,11 +183,11 @@ ShellRoot {
                             Text {
                                 text:root.busy ? "Working on your command…" : "What would you like to do?"
                                 visible:!editor.text.length
-                                color:"#77777f"; font.family:"Inter"; font.pixelSize:21
+                                color:"#b7b7b7"; font.family:"Inter"; font.pixelSize:20
                             }
                         }
                         Item {
-                            anchors.right:parent.right; anchors.rightMargin:18
+                            anchors.right:parent.right; anchors.rightMargin:12
                             anchors.verticalCenter:parent.verticalCenter
                             width:40; height:40
                             ActionGlyph { anchors.centerIn:parent; width:32;height:32; stopping:root.busy; hovered:actionMouse.containsMouse; pressed:actionMouse.pressed }
@@ -209,13 +198,13 @@ ShellRoot {
                         }
                     }
                     Text {
-                        x:26; y:compose.height-4
+                        x:22; y:compose.height-4
                         visible:root.busy
-                        text:root.activity; color:"#696970"; font.pixelSize:12
+                        text:root.activity; color:"#b7b7b7"; font.pixelSize:12
                     }
                     Flickable {
                         id:resultScroll
-                        x:26;y:compose.height+8;width:parent.width-52
+                        x:22;y:compose.height+8;width:parent.width-44
                         height:root.output ? Math.min(resultText.contentHeight,Math.max(80,Math.min(340,panel.height-280))) : 0
                         contentWidth:width;contentHeight:resultText.contentHeight
                         clip:true;visible:!!root.output
@@ -224,7 +213,7 @@ ShellRoot {
                         TextEdit {
                             id:resultText;width:resultScroll.width-12
                             text:root.output;readOnly:true;selectByMouse:true;textFormat:TextEdit.PlainText
-                            color:root.phase==="error" ? "#45454b" : "#252529"
+                            color:"#e4e4e4"; selectionColor:"#666666"; selectedTextColor:"#ffffff"
                             font.family:"Inter";font.pixelSize:15;wrapMode:TextEdit.Wrap
                             onTextChanged:resultScroll.contentY=0
                             Keys.onEscapePressed:root.opened=false

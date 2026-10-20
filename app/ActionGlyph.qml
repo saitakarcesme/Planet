@@ -11,7 +11,7 @@ Item {
     Rectangle {
         anchors.fill: parent
         radius: 14
-        color: glyph.hovered ? "#ccccd1" : "transparent"
+        color: glyph.hovered ? "#30ffffff" : "transparent"
     }
     Canvas {
         id: ink
@@ -20,8 +20,8 @@ Item {
             const ctx = getContext("2d");
             ctx.reset();
             ctx.clearRect(0, 0, width, height);
-            ctx.strokeStyle = "#252529";
-            ctx.fillStyle = "#252529";
+            ctx.strokeStyle = "#e4e4e4";
+            ctx.fillStyle = "#e4e4e4";
             ctx.lineWidth = 1.8;
             ctx.lineCap = "round";
             ctx.lineJoin = "round";

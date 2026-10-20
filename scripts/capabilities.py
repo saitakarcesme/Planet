@@ -57,7 +57,7 @@ class Executor:
         term=re.sub(r'^(?:the )| (?:app|application|uygulamasi)$','',term)
         catalog=self.desktop.catalog()
         preferred=aliases.get(term)
-        exact=[a['id'] for a in catalog if normalized(a['name'])==term or normalized(a['id'].removesuffix('.desktop'))==term or a['id']==preferred]
+        exact=[a['id'] for a in catalog if normalized(a['name'])==term or normalized(a['id'])==term or normalized(a['id'].removesuffix('.desktop'))==term or a['id']==preferred]
         if 'discord.desktop' in exact:exact=['discord.desktop']
         if len(exact)!=1:raise CapabilityError('Specify one installed application by its exact name.')
         return exact[0]
@@ -134,6 +134,11 @@ class Executor:
         if key in ('search','liked'):
             from .music import play_selection
             return play_selection(self.desktop,query if key=='search' else None)
+        if key=='play':
+            players=self.desktop.media_status()['players']
+            if not players or any(p['name']=='Spotify' for p in players):
+                from .music import play_selection
+                return play_selection(self.desktop,'some music')
         p=self.player();player=p['player']
         if key=='status':return result(message=f"{p['state']}: {p.get('title') or 'No track'} — {', '.join(p.get('artist') or [])}",player=p)
         if key in ('play','pause','stop','next','previous'):
@@ -144,6 +149,10 @@ class Executor:
             elif key=='stop':check=lambda q:q.get('state') in ('Stopped','Paused')
             else:check=lambda q:q.get('state')=={'play':'Playing','pause':'Paused'}[key]
             after=wait_until(lambda:next((q for q in self.desktop.media_status()['players'] if q['player']==player),{}),check,3)
+            if key=='play':
+                verified=self.desktop.wait_for_media(player,after.get('title') or '', 'Playing',3)
+                if not verified.get('verified'):
+                    raise CapabilityError('The player did not confirm advancing playback.')
             return result(player=after)
         if key in ('forward','back'):
             delta=10_000_000 if key=='forward' else -10_000_000

@@ -17,11 +17,11 @@ RUN
   Current machine: Super+Alt+P is already bound to ./planet toggle.
   On another Hyprland installation, bind that chord to the absolute launcher
   path using that installation's configuration syntax. This repo does not
-  install a global shortcut, autostart or system service automatically.
+  install a global shortcut automatically. Model autostart is an explicit setup step below.
 
   Dependencies: Quickshell 0.3.2, Python 3 with PyGObject/Gio/AT-SPI, wtype,
   xdotool, grim, tesseract with English data, ImageMagick, C compiler, pkg-config,
-  wayland-client and wayland-scanner. Native recipes additionally use the
+  wayland-client, wayland-scanner and Qt 6 Shader Tools (qsb). Native recipes additionally use the
   installed wpctl, nmcli, xdg-user-dir, git, foot and systemd user tools.
   Editor/agent launch recipes require code, claude or codex on PATH.
   The Wayland pointer helper is built locally on first start. This development
@@ -49,9 +49,16 @@ NATIVE ACCESSIBILITY
     https://www.chromium.org/developers/accessibility/testing/automated-testing/ax-inspect/
 
 CONTROLS AND DESIGN
-  Nothing is normally visible. Super+Alt+P opens one pale-gray, borderless
-  command panel on the pointer's monitor. It is centered, up to 780 px wide,
-  with a 24 px corner radius. All four edges of that monitor glow white.
+  Nothing is normally visible. Super+Alt+P opens one dark translucent, borderless
+  command panel on the pointer's monitor. It is centered, up to 720 px wide,
+  initially 62 px tall, with an 18 px corner radius. A grayscale light travels
+  around all four screen edges. Four narrow GPU-shaded strips leave the centre
+  unshaded; the animation stops when hidden. The compositor blurs the command
+  surface using the layer rule in config/planet-glass.lua. The empty desktop
+  remains transparent and receives pointer events.
+  On Hyprland 0.56 Lua, copy that file to ~/.config/hypr/planet-glass.lua and
+  add require("hypr.planet-glass") to the user hyprland.lua after backing it up.
+  Run hyprctl reload and hyprctl configerrors. This machine is already configured.
   Enter submits, Shift+Enter adds a line, Escape hides the panel.
   /help explains controls; /skills lists the 100 built-in capabilities.
 
@@ -80,8 +87,22 @@ MODELS AND ROUTING
     control stop       Stop only its own services.
   It does not evict competing models. Do not run competing GPU profiles at
   once. The current pair uses H2O on GPU0 and HyperQwen on GPU1. Its services
-  are transient; they do not survive a reboot. No autostart is installed by
-  Planet. README and reports describe the tested profile, not a speed promise.
+  are transient. The installed planet-models.service now starts this pair at
+  user login and monitors health. Install it explicitly for this existing lab:
+    python scripts/install-runtime.py --model-control ~/Projects/omarchypet-model-lab/control
+    systemctl --user status planet-models.service
+    journalctl --user -u planet-models.service
+
+  Healthy services are adopted without a restart. Three failed probes trigger
+  recovery of only the controller's named services, after active model requests
+  release their lease. Native aliases still work while models are unavailable.
+  Other requests show "Starting local models…" and wait up to 150 seconds before
+  inference; Stop remains available. Startup failures back off instead of evicting
+  other GPU workloads. Runtime status is private in .planet-runs/runtime.json.
+  To disable automatic recovery: systemctl --user disable --now planet-models.service.
+  This stops the supervisor, not the resident models; use control stop separately.
+  The installer is specific to the existing lab controller's ownership contract,
+  not an arbitrary model server. README/reports are not a speed promise.
 
   1. Fully matched English/Turkish aliases select one of 100 typed native
      recipes without model inference. See design/CAPABILITIES.txt. Up to four
@@ -90,6 +111,10 @@ MODELS AND ROUTING
   2. H2O selects a known capability for unseen wording at confidence >= 0.97.
      If that capability needs arguments, Qwen extracts a small typed object.
      Missing/invalid arguments, uncertain or unknown requests fall through.
+     Spotify scope uses a second three-way gate (separately tested >= 0.90):
+     unspecified music resumes the queue without text generation; named music
+     extracts the actual target; extra conditions remain with the general planner.
+     Wildcard search aliases reject personal collections and extra qualifiers.
   3. The general H2O/Qwen controller handles unfamiliar tasks and requested
      writing through observed native controls and typed tools. It checks each
      mutation against the request and assesses outcome evidence. There is no
@@ -170,7 +195,8 @@ LOCAL DATA
   Timers are transient planet-timer-* units in the current user's systemd session.
 
 VALIDATION
-  Latest Spotify regression: reports/SPOTIFY-RECOVERY-2026-10-20.txt.
+  Latest UI/runtime regression: reports/GLASS-RUNTIME-2026-10-20.txt.
+  Previous Spotify regression: reports/SPOTIFY-RECOVERY-2026-10-20.txt.
   Full capability baseline: reports/COMMAND-CAPABILITIES-2026-10-20.txt and JSON.
   Final full run: 100 capabilities attempted, 98 passed, 2 unavailable because
   this machine has no default microphone. Of the 98 successful operations,
@@ -189,6 +215,10 @@ VALIDATION
     python tests/live_ui.py --tag my-ui-run
     python tests/live_spotify_recovery.py --tag my-spotify-run
     python tests/live_spotify_recovery.py --cold --tag my-spotify-startup-run
+    python tests/live_spotify_recovery.py --paraphrases --tag my-language-run
+    python tests/live_spotify_recovery.py --closed --tag my-closed-player-run
+    python tests/live_runtime.py --tag my-model-recovery-run
+    python tests/live_routing.py --tag my-routing-run
   Use fresh tags. Full trials create their own local fixtures and windows,
   temporarily change audio/workspaces and restore settings. Playback is muted
   during tests and left paused. Agent-terminal checks verify a visible terminal,
@@ -203,6 +233,10 @@ VALIDATION
 FILES
   app/shell.qml            Centered command overlay and bridge events
   app/ActionGlyph.qml      Send/stop glyphs
+  app/EdgeGlow.qml         Narrow grayscale shader strips
+  app/edge.frag            Animated screen-edge light
+  scripts/model_runtime.py Model readiness, inference leases and recovery
+  scripts/install-runtime.py Explicit user-service installer
   scripts/skills.py        Exactly 100 typed capabilities and anchored aliases
   scripts/fast.py          Alias, semantic and composite routing
   scripts/capabilities.py  Native recipes and verified postconditions
@@ -225,8 +259,7 @@ REFERENCES
   https://www.freedesktop.org/wiki/Specifications/file-manager-interface/
 
 DEVELOPMENT MACHINE SERVICE NOTE
-  The unresponsive EXL3 profile (llmrig-homelab.service, ports 11445/11446)
-  and the previous H2O balanced profile were stopped for the tested resident
-  pair. Their files and enablement were preserved. Only the resident pair is
-  running now. A reboot may start the old enabled profile instead: inspect
-  services before starting the lab pair to avoid competing GPU allocations.
+  The separate llmrig-homelab router is currently enabled but loads GPU engines
+  only on demand. Planet does not disable or evict it. Competing GPU model loads
+  can prevent Planet startup; the supervisor reports that condition and retries.
+  The resident Planet profile uses the two 3090s, with H2O on GPU0 and Qwen on GPU1.

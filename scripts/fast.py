@@ -17,8 +17,21 @@ def direct_plan(text):
     return [(*item,'alias-chain') for item in matches] if all(matches) else None
 
 
-def select(text, decision=None, generate=None):
-    direct=match(text)
+def resolved_plan(text):
+    """A wildcard application name is direct only if the installed catalog agrees."""
+    plan=direct_plan(text)
+    if plan and any(id.startswith('app.') for id,_,_ in plan):
+        resolver=Executor()
+        try:
+            for id,args,_ in plan:
+                if id.startswith('app.'):resolver.app_id(args['app'])
+        except CapabilityError:
+            return None
+    return plan
+
+
+def select(text, decision=None, generate=None, aliases=True):
+    direct=match(text) if aliases else None
     if direct:return (*direct,'alias')
     if not decision:return None
     options={s['id']:s['title'] for s in SKILLS}
@@ -27,6 +40,17 @@ def select(text, decision=None, generate=None):
         'Select EXACTLY one fully matching capability. Choose other for multiple actions, extra conditions, absent scope, unknown or ambiguous requests. Do not discard any requirement to fit a capability.')
     if chosen=='other' or p<.97 or chosen not in BY_ID:return None
     skill=BY_ID[chosen]
+    if chosen=='media.search':
+        scope, confidence=decision({'human_request':text},{
+            'resume':'Play any music in Spotify. No named artist, song, album, playlist, personal collection, genre, mood, exclusion or other condition.',
+            'named':'Play a specific named artist or song in Spotify, with no additional conditions.',
+            'other':'Personal collection, playlist, album, genre, mood, extra condition, ambiguous target or multiple tasks.'
+        },'Classify the WHOLE request. Do not discard any qualifier. A polite request for unspecified music is resume, not a literal search.')
+        # This three-way gate has a different probability distribution from the
+        # 101-way capability selector. Keep its separately tested threshold.
+        if confidence<.90 or scope=='other':return None
+        if scope=='resume':
+            return chosen,{'query':'some music'},'semantic'
     if skill['params']:
         if generate is None:return None
         args=generate(skill,text)
@@ -44,16 +68,19 @@ def attempt(text,emit,context=None,semantic=True):
         # A compact single-tool call, with no desktop dump or long agent prompt.
         definition={'type':'function','function':{'name':'parameters','description':skill['title'],
             'parameters':{'type':'object','properties':{k:{'type':v} for k,v in skill['params'].items()},'required':list(skill['params']),'additionalProperties':False}}}
+        catalog=''
+        if skill['id'].startswith('app.'):
+            catalog='\nFor app, resolve the explicitly requested installed application using this catalog. Use its exact ID. Do not substitute another app for one that is absent. If ambiguous, return no tool call.\n'+json.dumps(Executor().desktop.catalog())
         response=http(base+'/chat/completions',{'model':model,'messages':[
-            {'role':'system','content':'Extract parameters literally from the human request for the named capability. Preserve paths, artist names and user text. Do not invent missing values. If missing or ambiguous, return no tool call. Never execute anything.'},
+            {'role':'system','content':'Extract parameters literally from the human request for the named capability. Preserve paths, artist names and user text. Exclude polite conversational wording from an artist/song target. Do not invent missing values. If missing or ambiguous, return no tool call. Never execute anything.'+catalog},
             {'role':'user','content':text}], 'tools':[definition],'temperature':0,'max_tokens':250,'chat_template_kwargs':{'enable_thinking':False}},timeout=10)
         calls=response['choices'][0]['message'].get('tool_calls') or []
         if len(calls)!=1 or calls[0]['function']['name']!='parameters':return None
         raw=calls[0]['function']['arguments'];return json.loads(raw) if isinstance(raw,str) else raw
     try:
-        plan=direct_plan(text)
+        plan=resolved_plan(text)
         if plan is None:
-            selection=select(text,decision if semantic else None,extract)
+            selection=select(text,decision if semantic else None,extract,aliases=False)
             if not selection:return None
             plan=[selection]
     except (OSError,ValueError,KeyError,RuntimeError):return None

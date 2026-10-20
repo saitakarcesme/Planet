@@ -142,6 +142,13 @@ def match(text):
                 values={k:source[offsets[a]:offsets[b] if b<len(offsets) else len(source)] for k in skill['params'] for a,b in [found.span(k)]}
                 for k,kind in skill['params'].items():
                     if kind=='integer':values[k]=int(values[k])
+                # Wildcards are literal slots, not permission to discard scope.
+                # Personal collections, requests with qualifiers and conversational
+                # phrasing need semantic routing instead of a literal song search.
+                if skill['id']=='media.search' and re.search(
+                    r"\b(from|liked|saved|favorites?|favourites?|playlist|album|only|without|except|but|by|please|for me|begen|begenilen|begendigim|begenilenler|listem|listemden|sadece|haric)\w*\b",
+                    normalized(values['query'])):
+                    continue
                 matches.append((skill['id'],values,len(re.sub(r'\{\w+\}', '', alias))))
     if not matches:return None
     # Specific phrases beat generic app/music catch-alls.

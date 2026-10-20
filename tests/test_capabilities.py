@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from unittest.mock import Mock, patch
 from scripts.skills import SKILLS, BY_ID, match, validate
-from scripts.fast import select, direct_plan
+from scripts.fast import select, direct_plan, resolved_plan
 from scripts.capabilities import Executor, CapabilityError, calculate
 
 class CapabilitiesTests(unittest.TestCase):
@@ -53,6 +53,37 @@ class CapabilitiesTests(unittest.TestCase):
     def test_direct_alias_does_not_call_models(self):
         model=Mock(side_effect=AssertionError('No model needed'))
         self.assertEqual(select('pause music',model,model),('media.pause',{},'alias'))
+
+    def test_search_wildcard_cannot_swallow_collection_or_conditions(self):
+        for text in ['Play a song from my liked songs on Spotify',
+                     'play ABBA without live recordings on spotify',
+                     'play songs by ABBA on spotify',
+                     'play my workout playlist on spotify']:
+            with self.subTest(text=text):
+                self.assertIsNone(match(text))
+
+    def test_semantic_unspecified_music_needs_no_generator(self):
+        decision=Mock(side_effect=[('media.search',.99),('resume',.99)])
+        generate=Mock(side_effect=AssertionError('No named target to extract'))
+        self.assertEqual(select('Can you put something on in Spotify?',decision,generate),
+                         ('media.search',{'query':'some music'},'semantic'))
+
+    def test_semantic_music_conditions_cannot_be_dropped(self):
+        for scope,confidence in [('other',.99),('resume',.8)]:
+            decision=Mock(side_effect=[('media.search',.99),(scope,confidence)])
+            self.assertIsNone(select('Play something relaxing without vocals',decision,Mock()))
+
+    def test_unresolved_app_slot_goes_to_planner_before_execution(self):
+        with patch('scripts.fast.Executor') as executor:
+            executor.return_value.app_id.side_effect=CapabilityError('Not exact')
+            self.assertIsNone(resolved_plan('open Spotify please'))
+            executor.return_value.run.assert_not_called()
+
+    def test_resolved_app_remains_a_direct_native_action(self):
+        with patch('scripts.fast.Executor') as executor:
+            executor.return_value.app_id.return_value='spotify.desktop'
+            self.assertEqual(resolved_plan('open Spotify'),[('app.open',{'app':'Spotify'},'alias')])
+            executor.return_value.run.assert_not_called()
 
     def test_uncertain_semantic_routing_falls_back_without_execution(self):
         self.assertIsNone(select('some task',lambda *a:('media.pause',.7)))
