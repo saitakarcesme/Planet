@@ -1,0 +1,38 @@
+{
+  "tool": "built-in image_gen",
+  "round": 3,
+  "feedback": {
+    "keep": "TTY terminal concept and pixel style",
+    "change": "Original white and ice-blue palette disliked; explore four distinct colorways"
+  },
+  "candidates": [
+    {
+      "id": "09",
+      "name": "PHOSPHOR",
+      "detail": "Heading \"09 / PHOSPHOR\". Green monochromatic retro terminal palette. Outer frame, arms and feet medium leaf green #6DAA44; shadow clusters deep olive #34562C; screen nearly black green #101B12; > and underscore BOTH bright acid lime #C4F36B. Sparse highlight pixels pale yellowgreen #DDECB6. Green frame is bold and visible, not white. Crisp energetic phosphor feel with absolutely no bloom.",
+      "prompt": "Use case: precise-object-edit. Input image is the EDIT TARGET: existing TTY pixel desktop pet concept sheet. Create a COLORWAY variation only. Preserve this exact character identity, silhouette, blocky pixel art, notched upper-right corner, >_ face, feet, arms, proportions, pose arrangement and square canvas composition. One large standing hero above three small poses. Keep the same flat charcoal #282828 backdrop for fair comparison. Replace old white/gray/ice-blue character colors with the specified new palette in ALL four poses. Flat hard-edged pixel color clusters, no gradient, no glow, no 3D, no extra accessories or redesign. Update top-left pixel heading to specified exact text. Do not add any other text, palette swatches, borders, or UI. Restrict character to specified palette. Character fill must be clearly different from original.\nHeading \"09 / PHOSPHOR\". Green monochromatic retro terminal palette. Outer frame, arms and feet medium leaf green #6DAA44; shadow clusters deep olive #34562C; screen nearly black green #101B12; > and underscore BOTH bright acid lime #C4F36B. Sparse highlight pixels pale yellowgreen #DDECB6. Green frame is bold and visible, not white. Crisp energetic phosphor feel with absolutely no bloom.",
+      "reference": "design/explorations/round-02/05-tty.png"
+    },
+    {
+      "id": "10",
+      "name": "AMBER",
+      "detail": "Heading \"10 / AMBER\". Rich warm amber and chocolate palette. Outer frame arms feet saturated ochre-gold #D79A35; shadow clusters burnt umber #86532D; screen deep chocolate #291D17; > and underscore BOTH pale warm honey #FFE0A0. Edge highlights muted gold #EDBD69. Strong honey-orange silhouette, no white, no blue. Old amber terminal warmth, flat colors only.",
+      "prompt": "Use case: precise-object-edit. Input image is the EDIT TARGET: existing TTY pixel desktop pet concept sheet. Create a COLORWAY variation only. Preserve this exact character identity, silhouette, blocky pixel art, notched upper-right corner, >_ face, feet, arms, proportions, pose arrangement and square canvas composition. One large standing hero above three small poses. Keep the same flat charcoal #282828 backdrop for fair comparison. Replace old white/gray/ice-blue character colors with the specified new palette in ALL four poses. Flat hard-edged pixel color clusters, no gradient, no glow, no 3D, no extra accessories or redesign. Update top-left pixel heading to specified exact text. Do not add any other text, palette swatches, borders, or UI. Restrict character to specified palette. Character fill must be clearly different from original.\nHeading \"10 / AMBER\". Rich warm amber and chocolate palette. Outer frame arms feet saturated ochre-gold #D79A35; shadow clusters burnt umber #86532D; screen deep chocolate #291D17; > and underscore BOTH pale warm honey #FFE0A0. Edge highlights muted gold #EDBD69. Strong honey-orange silhouette, no white, no blue. Old amber terminal warmth, flat colors only.",
+      "reference": "design/explorations/round-02/05-tty.png"
+    },
+    {
+      "id": "11",
+      "name": "PLUM",
+      "detail": "Heading \"11 / PLUM\". Purple and pink inverted-light-screen palette. Frame arms feet deep muted purple #76508F with lilac highlight clusters #AF8BC5, shadow clusters #493252. Screen fill LIGHT dusty lavender #D9C8E4, NOT black. > face glyph dark plum #38263F; underscore vivid berry pink #B5407D. Make screen inversion a clear contrast to previous black-screen candidates. Refined graphic flat sprite; no neon, no glow, no blue or white.",
+      "prompt": "Use case: precise-object-edit. Input image is the EDIT TARGET: existing TTY pixel desktop pet concept sheet. Create a COLORWAY variation only. Preserve this exact character identity, silhouette, blocky pixel art, notched upper-right corner, >_ face, feet, arms, proportions, pose arrangement and square canvas composition. One large standing hero above three small poses. Keep the same flat charcoal #282828 backdrop for fair comparison. Replace old white/gray/ice-blue character colors with the specified new palette in ALL four poses. Flat hard-edged pixel color clusters, no gradient, no glow, no 3D, no extra accessories or redesign. Update top-left pixel heading to specified exact text. Do not add any other text, palette swatches, borders, or UI. Restrict character to specified palette. Character fill must be clearly different from original.\nHeading \"11 / PLUM\". Purple and pink inverted-light-screen palette. Frame arms feet deep muted purple #76508F with lilac highlight clusters #AF8BC5, shadow clusters #493252. Screen fill LIGHT dusty lavender #D9C8E4, NOT black. > face glyph dark plum #38263F; underscore vivid berry pink #B5407D. Make screen inversion a clear contrast to previous black-screen candidates. Refined graphic flat sprite; no neon, no glow, no blue or white.",
+      "reference": "design/explorations/round-02/05-tty.png"
+    },
+    {
+      "id": "12",
+      "name": "CLAY",
+      "detail": "Heading \"12 / CLAY\". Earthy terracotta and cream inverted-light-screen palette. Frame arms feet brick red #B6543B, highlights warm faded coral #D6815A, shadow clusters deep oxblood #713B32. Screen is LIGHT parchment cream #E8D7AD, NOT black. > and underscore BOTH very dark warm brown #43362C. Warm bold red silhouette with cream face and dark symbols; subtle vintage printed-computer feel, flat pixel art, no paper texture, no white, no blue.",
+      "prompt": "Use case: precise-object-edit. Input image is the EDIT TARGET: existing TTY pixel desktop pet concept sheet. Create a COLORWAY variation only. Preserve this exact character identity, silhouette, blocky pixel art, notched upper-right corner, >_ face, feet, arms, proportions, pose arrangement and square canvas composition. One large standing hero above three small poses. Keep the same flat charcoal #282828 backdrop for fair comparison. Replace old white/gray/ice-blue character colors with the specified new palette in ALL four poses. Flat hard-edged pixel color clusters, no gradient, no glow, no 3D, no extra accessories or redesign. Update top-left pixel heading to specified exact text. Do not add any other text, palette swatches, borders, or UI. Restrict character to specified palette. Character fill must be clearly different from original.\nHeading \"12 / CLAY\". Earthy terracotta and cream inverted-light-screen palette. Frame arms feet brick red #B6543B, highlights warm faded coral #D6815A, shadow clusters deep oxblood #713B32. Screen is LIGHT parchment cream #E8D7AD, NOT black. > and underscore BOTH very dark warm brown #43362C. Warm bold red silhouette with cream face and dark symbols; subtle vintage printed-computer feel, flat pixel art, no paper texture, no white, no blue.",
+      "reference": "design/explorations/round-02/05-tty.png"
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+PLANET_ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+export PLANET_ROOT
+case "${1:-start}" in
+  start|toggle)
+    if [[ ! -x "$PLANET_ROOT/.build/planet-pointer" || "$PLANET_ROOT/scripts/pointer.c" -nt "$PLANET_ROOT/.build/planet-pointer" ]]; then
+      "$PLANET_ROOT/scripts/build-pointer"
+    fi ;;
+esac
+case "${1:-start}" in
+  start) exec quickshell -p "$PLANET_ROOT/app" --no-duplicate --daemonize ;;
+  toggle)
+    if ! quickshell ipc -p "$PLANET_ROOT/app" call planet toggle 2>/dev/null; then
+      quickshell -p "$PLANET_ROOT/app" --no-duplicate --daemonize
+      for attempt in {1..20}; do
+        if quickshell ipc -p "$PLANET_ROOT/app" call planet toggle 2>/dev/null; then exit 0; fi
+        sleep 0.1
+      done
+      echo 'Planet could not start.' >&2; exit 1
+    fi ;;
+  demo|status|close|clear|cancel) exec quickshell ipc -p "$PLANET_ROOT/app" call planet "$1" ;;
+  stop) exec quickshell ipc -p "$PLANET_ROOT/app" call planet quit ;;
+  *) echo 'Usage: ./planet [start|toggle|demo|status|close|clear|cancel|stop]' >&2; exit 2 ;;
+esac
