@@ -146,6 +146,17 @@ class Controller:
                 raise ValueError('Tool argument is too long.')
 
     def confirm_completion(self, message, evidence):
+        ui=[e['result'] for e in self.trace if e['kind']=='tool' and 'elements' in e['result']]
+        if ui and any('public playlist' in str(n.get('text','')).casefold() for n in ui[-1]['elements']):
+            # An observed public/private scope contradiction is stronger evidence
+            # than a language model's interpretation of a matching collection name.
+            scope,_=decision({'human_request':self.text},{
+                'personal':'Requires music from the user’s own saved, liked, favorite songs or personal collection.',
+                'general':'Does not require personal collection membership: general playback, track information, or explicitly public content.'},
+                'Classify whether the requested outcome requires membership in the human’s personal media library. Use the meaning of the request, not matching keywords.')
+            self.log('collection_scope_check',required=scope,observed='public')
+            if scope=='personal':
+                raise ValueError('The observed collection explicitly says Public Playlist. That does not verify the requested personal collection. Navigate the actual personal library, or finish with blocked; never claim personal ownership from a matching title.')
         definition=spec('assess_outcome','Check observed evidence, without executing anything.',{
             'supported':('boolean','True only if the requested outcome and every completion claim are supported by observations.'),
             'reason':S('Concise English explanation, including any missing evidence.')})

@@ -1,0 +1,239 @@
+{
+  "drag_closed": [
+    {
+      "trial": 1,
+      "samples": 40,
+      "max_error_px": 0.0,
+      "mean_error_px": 0.0,
+      "events": 40,
+      "cancelled": 0,
+      "released": true,
+      "screen": "DP-2",
+      "chat_toggled": false,
+      "pass": true
+    },
+    {
+      "trial": 2,
+      "samples": 40,
+      "max_error_px": 0.0,
+      "mean_error_px": 0.0,
+      "events": 40,
+      "cancelled": 0,
+      "released": true,
+      "screen": "HDMI-A-1",
+      "chat_toggled": false,
+      "pass": true
+    },
+    {
+      "trial": 3,
+      "samples": 40,
+      "max_error_px": 0.0,
+      "mean_error_px": 0.0,
+      "events": 40,
+      "cancelled": 0,
+      "released": true,
+      "screen": "DP-2",
+      "chat_toggled": false,
+      "pass": true
+    },
+    {
+      "trial": 4,
+      "samples": 40,
+      "max_error_px": 0.0,
+      "mean_error_px": 0.0,
+      "events": 40,
+      "cancelled": 0,
+      "released": true,
+      "screen": "HDMI-A-1",
+      "chat_toggled": false,
+      "pass": true
+    },
+    {
+      "trial": 5,
+      "samples": 40,
+      "max_error_px": 0.0,
+      "mean_error_px": 0.0,
+      "events": 40,
+      "cancelled": 0,
+      "released": true,
+      "screen": "DP-2",
+      "chat_toggled": false,
+      "pass": true
+    },
+    {
+      "trial": 6,
+      "samples": 40,
+      "max_error_px": 0.0,
+      "mean_error_px": 0.0,
+      "events": 40,
+      "cancelled": 0,
+      "released": true,
+      "screen": "HDMI-A-1",
+      "chat_toggled": false,
+      "pass": true
+    },
+    {
+      "trial": 7,
+      "samples": 40,
+      "max_error_px": 0.0,
+      "mean_error_px": 0.0,
+      "events": 40,
+      "cancelled": 0,
+      "released": true,
+      "screen": "DP-2",
+      "chat_toggled": false,
+      "pass": true
+    },
+    {
+      "trial": 8,
+      "samples": 40,
+      "max_error_px": 0.0,
+      "mean_error_px": 0.0,
+      "events": 40,
+      "cancelled": 0,
+      "released": true,
+      "screen": "HDMI-A-1",
+      "chat_toggled": false,
+      "pass": true
+    }
+  ],
+  "drag_open_fixed": [
+    {
+      "trial": 1,
+      "samples": 40,
+      "max_error_px": 0.0,
+      "mean_error_px": 0.0,
+      "events": 40,
+      "cancelled": 0,
+      "released": true,
+      "screen": "DP-2",
+      "chat_open": true,
+      "chat_toggled": false,
+      "pass": true
+    },
+    {
+      "trial": 2,
+      "samples": 40,
+      "max_error_px": 0.0,
+      "mean_error_px": 0.0,
+      "events": 40,
+      "cancelled": 0,
+      "released": true,
+      "screen": "HDMI-A-1",
+      "chat_open": true,
+      "chat_toggled": false,
+      "pass": true
+    },
+    {
+      "trial": 3,
+      "samples": 40,
+      "max_error_px": 0.0,
+      "mean_error_px": 0.0,
+      "events": 40,
+      "cancelled": 0,
+      "released": true,
+      "screen": "DP-2",
+      "chat_open": true,
+      "chat_toggled": false,
+      "pass": true
+    },
+    {
+      "trial": 4,
+      "samples": 40,
+      "max_error_px": 0.0,
+      "mean_error_px": 0.0,
+      "events": 40,
+      "cancelled": 0,
+      "released": true,
+      "screen": "HDMI-A-1",
+      "chat_open": true,
+      "chat_toggled": false,
+      "pass": true
+    },
+    {
+      "trial": 5,
+      "samples": 40,
+      "max_error_px": 0.0,
+      "mean_error_px": 0.0,
+      "events": 40,
+      "cancelled": 0,
+      "released": true,
+      "screen": "DP-2",
+      "chat_open": true,
+      "chat_toggled": false,
+      "pass": true
+    },
+    {
+      "trial": 6,
+      "samples": 40,
+      "max_error_px": 0.0,
+      "mean_error_px": 0.0,
+      "events": 40,
+      "cancelled": 0,
+      "released": true,
+      "screen": "HDMI-A-1",
+      "chat_open": true,
+      "chat_toggled": false,
+      "pass": true
+    },
+    {
+      "trial": 7,
+      "samples": 40,
+      "max_error_px": 0.0,
+      "mean_error_px": 0.0,
+      "events": 40,
+      "cancelled": 0,
+      "released": true,
+      "screen": "DP-2",
+      "chat_open": true,
+      "chat_toggled": false,
+      "pass": true
+    },
+    {
+      "trial": 8,
+      "samples": 40,
+      "max_error_px": 0.0,
+      "mean_error_px": 0.0,
+      "events": 40,
+      "cancelled": 0,
+      "released": true,
+      "screen": "HDMI-A-1",
+      "chat_open": true,
+      "chat_toggled": false,
+      "pass": true
+    }
+  ],
+  "ui": [
+    {
+      "case": "normally-collapsed",
+      "pass": true
+    },
+    {
+      "case": "ui-to-local-model-to-ui",
+      "pass": true
+    },
+    {
+      "case": "native-wheel-scroll",
+      "pass": true,
+      "before": 2546.199999999998,
+      "after": 2114
+    },
+    {
+      "case": "native-app-survives-bridge-exit",
+      "pass": true
+    },
+    {
+      "case": "cancel-local-request",
+      "pass": true,
+      "cancel_to_idle_seconds": 0.065
+    },
+    {
+      "case": "collapse-after-task",
+      "pass": true
+    }
+  ],
+  "notes": [
+    "The initial open-chat drag trial failed at monitor boundaries; freezing keyboard focus until release fixed all eight reruns.",
+    "Positions are sampled application coordinates, not high-speed camera frame measurements."
+  ]
+}

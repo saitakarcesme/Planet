@@ -1,0 +1,6 @@
+{
+  "extended-03:music-playlist-01": {
+    "pass": false,
+    "reason": "Original oracle accepted a public playlist named Liked Songs and resuming the old track. Manual trace audit rejected this false positive."
+  }
+}

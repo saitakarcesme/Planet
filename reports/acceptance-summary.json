@@ -1,0 +1,475 @@
+{
+  "runs": {
+    "pilot-01": {
+      "attempts": 4,
+      "functional_passes": 4,
+      "categories": {
+        "launch": {
+          "attempts": 4,
+          "functional_passes": 4,
+          "median_wall_seconds": 0.855
+        }
+      },
+      "failures": []
+    },
+    "pilot-02": {
+      "attempts": 3,
+      "functional_passes": 1,
+      "categories": {
+        "calculator": {
+          "attempts": 3,
+          "functional_passes": 1,
+          "median_wall_seconds": 47.68
+        }
+      },
+      "failures": [
+        "calculator-01",
+        "calculator-02"
+      ]
+    },
+    "pilot-03": {
+      "attempts": 11,
+      "functional_passes": 10,
+      "categories": {
+        "launch": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 11.605
+        },
+        "calculator": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 33.974
+        },
+        "find": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 5.24
+        },
+        "missing": {
+          "attempts": 1,
+          "functional_passes": 0,
+          "median_wall_seconds": 5.685
+        },
+        "mkdir": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 6.553
+        },
+        "navigate": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 4.415
+        },
+        "music": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 12.241
+        },
+        "music_info": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 6.519
+        },
+        "answer": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 0.656
+        },
+        "unknown_app": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 5.819
+        },
+        "combined": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 6.673
+        }
+      },
+      "failures": [
+        "missing-01"
+      ]
+    },
+    "full-01": {
+      "attempts": 17,
+      "functional_passes": 10,
+      "categories": {
+        "launch": {
+          "attempts": 12,
+          "functional_passes": 7,
+          "median_wall_seconds": 3.179
+        },
+        "calculator": {
+          "attempts": 5,
+          "functional_passes": 3,
+          "median_wall_seconds": 33.764
+        }
+      },
+      "failures": [
+        "launch-05",
+        "launch-06",
+        "launch-10",
+        "launch-11",
+        "launch-12",
+        "calculator-02",
+        "calculator-05"
+      ]
+    },
+    "pilot-04": {
+      "attempts": 2,
+      "functional_passes": 2,
+      "categories": {
+        "calculator": {
+          "attempts": 2,
+          "functional_passes": 2,
+          "median_wall_seconds": 15.502
+        }
+      },
+      "failures": []
+    },
+    "full-02": {
+      "attempts": 118,
+      "functional_passes": 117,
+      "categories": {
+        "launch": {
+          "attempts": 12,
+          "functional_passes": 12,
+          "median_wall_seconds": 0.847
+        },
+        "calculator": {
+          "attempts": 24,
+          "functional_passes": 23,
+          "median_wall_seconds": 14.102
+        },
+        "find": {
+          "attempts": 12,
+          "functional_passes": 12,
+          "median_wall_seconds": 4.386
+        },
+        "missing": {
+          "attempts": 6,
+          "functional_passes": 6,
+          "median_wall_seconds": 5.353
+        },
+        "mkdir": {
+          "attempts": 12,
+          "functional_passes": 12,
+          "median_wall_seconds": 5.448
+        },
+        "navigate": {
+          "attempts": 16,
+          "functional_passes": 16,
+          "median_wall_seconds": 4.798
+        },
+        "music": {
+          "attempts": 12,
+          "functional_passes": 12,
+          "median_wall_seconds": 7.562
+        },
+        "music_info": {
+          "attempts": 6,
+          "functional_passes": 6,
+          "median_wall_seconds": 6.247
+        },
+        "answer": {
+          "attempts": 6,
+          "functional_passes": 6,
+          "median_wall_seconds": 0.734
+        },
+        "unknown_app": {
+          "attempts": 6,
+          "functional_passes": 6,
+          "median_wall_seconds": 5.82
+        },
+        "combined": {
+          "attempts": 6,
+          "functional_passes": 6,
+          "median_wall_seconds": 7.377
+        }
+      },
+      "failures": [
+        "calculator-14"
+      ]
+    },
+    "extended-01": {
+      "attempts": 3,
+      "functional_passes": 0,
+      "categories": {
+        "document": {
+          "attempts": 2,
+          "functional_passes": 0,
+          "median_wall_seconds": 14.77
+        },
+        "music_playlist": {
+          "attempts": 1,
+          "functional_passes": 0,
+          "median_wall_seconds": 8.406
+        }
+      },
+      "failures": [
+        "document-01",
+        "document-02",
+        "music-playlist-01"
+      ]
+    },
+    "regression-01": {
+      "attempts": 28,
+      "functional_passes": 28,
+      "categories": {
+        "calculator": {
+          "attempts": 4,
+          "functional_passes": 4,
+          "median_wall_seconds": 14.588
+        },
+        "find": {
+          "attempts": 12,
+          "functional_passes": 12,
+          "median_wall_seconds": 4.502
+        },
+        "mkdir": {
+          "attempts": 6,
+          "functional_passes": 6,
+          "median_wall_seconds": 6.343
+        },
+        "answer": {
+          "attempts": 6,
+          "functional_passes": 6,
+          "median_wall_seconds": 0.874
+        }
+      },
+      "failures": []
+    },
+    "extended-02": {
+      "attempts": 3,
+      "functional_passes": 0,
+      "categories": {
+        "document": {
+          "attempts": 2,
+          "functional_passes": 0,
+          "median_wall_seconds": 82.0
+        },
+        "music_playlist": {
+          "attempts": 1,
+          "functional_passes": 0,
+          "median_wall_seconds": 7.986
+        }
+      },
+      "failures": [
+        "document-01",
+        "document-02",
+        "music-playlist-01"
+      ]
+    },
+    "extended-03": {
+      "attempts": 3,
+      "functional_passes": 0,
+      "categories": {
+        "document": {
+          "attempts": 2,
+          "functional_passes": 0,
+          "median_wall_seconds": 35.076
+        },
+        "music_playlist": {
+          "attempts": 1,
+          "functional_passes": 0,
+          "median_wall_seconds": 52.187
+        }
+      },
+      "failures": [
+        "document-01",
+        "document-02",
+        "music-playlist-01"
+      ]
+    },
+    "extended-04": {
+      "attempts": 3,
+      "functional_passes": 1,
+      "categories": {
+        "document": {
+          "attempts": 2,
+          "functional_passes": 1,
+          "median_wall_seconds": 74.537
+        },
+        "music_playlist": {
+          "attempts": 1,
+          "functional_passes": 0,
+          "median_wall_seconds": 128.119
+        }
+      },
+      "failures": [
+        "document-02",
+        "music-playlist-01"
+      ]
+    },
+    "final-smoke": {
+      "attempts": 11,
+      "functional_passes": 11,
+      "categories": {
+        "launch": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 0.874
+        },
+        "calculator": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 14.592
+        },
+        "find": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 4.972
+        },
+        "missing": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 6.142
+        },
+        "mkdir": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 4.936
+        },
+        "navigate": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 5.803
+        },
+        "music": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 6.953
+        },
+        "music_info": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 7.152
+        },
+        "answer": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 0.975
+        },
+        "unknown_app": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 6.478
+        },
+        "combined": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 8.387
+        }
+      },
+      "failures": []
+    },
+    "extended-05": {
+      "attempts": 3,
+      "functional_passes": 0,
+      "categories": {
+        "document": {
+          "attempts": 2,
+          "functional_passes": 0,
+          "median_wall_seconds": 87.136
+        },
+        "music_playlist": {
+          "attempts": 1,
+          "functional_passes": 0,
+          "median_wall_seconds": 33.678
+        }
+      },
+      "failures": [
+        "document-01",
+        "document-02",
+        "music-playlist-01"
+      ]
+    },
+    "verified-smoke": {
+      "attempts": 11,
+      "functional_passes": 11,
+      "categories": {
+        "launch": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 0.902
+        },
+        "calculator": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 19.003
+        },
+        "find": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 5.947
+        },
+        "missing": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 7.287
+        },
+        "mkdir": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 5.712
+        },
+        "navigate": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 7.661
+        },
+        "music": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 7.953
+        },
+        "music_info": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 7.769
+        },
+        "answer": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 1.021
+        },
+        "unknown_app": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 6.428
+        },
+        "combined": {
+          "attempts": 1,
+          "functional_passes": 1,
+          "median_wall_seconds": 11.948
+        }
+      },
+      "failures": []
+    },
+    "extended-06": {
+      "attempts": 2,
+      "functional_passes": 0,
+      "categories": {
+        "document": {
+          "attempts": 1,
+          "functional_passes": 0,
+          "median_wall_seconds": 110.241
+        },
+        "music_playlist": {
+          "attempts": 1,
+          "functional_passes": 0,
+          "median_wall_seconds": 60.725
+        }
+      },
+      "failures": [
+        "document-02",
+        "music-playlist-01"
+      ]
+    }
+  },
+  "total_attempts": 222,
+  "total_functional_passes": 195,
+  "note": "Includes exploratory failures and regression repetitions. Functional checks do not independently score English prose. Latencies include verification; some cases include waiting for a serialized drag diagnostic. No universal desktop capability is claimed.",
+  "distinct_request_texts": 116
+}

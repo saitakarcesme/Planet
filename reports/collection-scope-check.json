@@ -1,0 +1,5 @@
+{
+  "case": "actual-public-playlist-trace-rejected",
+  "pass": true,
+  "reason": "The observed collection explicitly says Public Playlist. That does not verify the requested personal collection. Navigate the actual personal library, or finish with blocked; never claim personal ownership from a matching title."
+}

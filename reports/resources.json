@@ -1,0 +1,21 @@
+{
+  "samples": 287,
+  "duration_seconds": 868.6,
+  "available_ram_gib_min": 11.95,
+  "desktop_ipc_ms": {
+    "median": 7.432,
+    "p95": 7.549,
+    "maximum": 7.633
+  },
+  "gpus": {
+    "0": {
+      "peak_used_mib": 10361.0,
+      "peak_temperature_c": 66.0
+    },
+    "1": {
+      "peak_used_mib": 19754.0,
+      "peak_temperature_c": 77.0
+    }
+  },
+  "note": "Desktop IPC latency is not frame time or FPS. Resource samples cover full-02; later extended UI trials were not sampled."
+}

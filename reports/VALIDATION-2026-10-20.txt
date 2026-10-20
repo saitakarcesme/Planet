@@ -1,0 +1,160 @@
+Planet — live desktop validation, 20 October 2026
+
+RESULT
+  222 completed real-model task attempts, covering 116 distinct request texts.
+  195 passed their functional checks; 27 did not. These totals deliberately
+  include exploratory failures, repeated requests, corrected regressions and
+  early test-oracle problems. They are not a general-purpose agent benchmark.
+  Mocked unit tests and pointer samples are NOT counted as real-model tasks.
+
+  The 118-case core suite passed 117/118. Its one failure was OCR reading 883
+  as 833. A corrected 28-case regression run passed 28/28, including that
+  calculation and the English-language response fix. Both subsequent 11-case
+  representative core runs passed 11/11. The last run included the new
+  independent completion assessment. This is not a claim that a fresh complete
+  118-case suite ran on the final source revision.
+
+CORE COVERAGE (full-02)
+  Installed app opening/focusing:         12/12
+  Real calculator interaction:           23/24, failed case passed on rerun
+  Existing-folder discovery:             12/12
+  Missing-folder reporting:               6/6
+  Folder creation:                       12/12
+  Native file-manager navigation:        16/16
+  Spotify playback/pause:                12/12
+  Actual track metadata:                  6/6
+  Answer-only generation:                 6/6
+  Unknown application handling:           6/6
+  Create folder, open it, list contents:   6/6
+
+  Requests include English and Turkish, spaces, Unicode folder names, nested
+  folders, arithmetic variations, absent apps and read-only inspection.
+  Repeated media requests test state transitions; they are not distinct tasks.
+  Open/focus trials include already-running apps, not just cold application
+  startup. A separate UI test verified that a launched Pinta window survived
+  the model bridge process exiting.
+
+INDEPENDENT CHECKS
+  Calculator output was read from the real app and compared with independently
+  computed arithmetic. Filesystem checks inspected the generated paths.
+  FileManager1 reported the actual open folder URI. MPRIS reported playback
+  state and the selected track. Writer output was read back from the saved
+  file. Model completion sentences alone were never a sufficient test oracle.
+
+  Functional checks do not independently score English prose. Manual inspection
+  found Turkish folder-result sentences in full-02 despite functional passes;
+  the dedicated English rewrite pass and 28-case rerun corrected those cases.
+
+WHAT REMAINS UNRELIABLE
+  Extended application workflows passed only 1/17 attempts. One Writer task
+  genuinely created the requested plain-text file with the exact requested
+  sentence, verified from disk. Other document attempts stalled in menus,
+  selection-only rows, format choices or pending dialogs. Do not treat general
+  document creation as reliable yet.
+
+  Personal Spotify Liked Songs selection is NOT validated. The planner confused
+  a public playlist with that title for the personal collection. Playback and
+  track changes occurred, but that did not satisfy the requested collection.
+  One early positive oracle result was revoked after manual trace review;
+  oracle-corrections.json preserves that correction. Raw evidence was retained.
+
+  An independent Qwen completion assessment also rationalized this incorrect
+  public/personal interpretation in a later run. The final code therefore adds
+  a stronger contradiction check: when observed UI explicitly says Public
+  Playlist and H2O classifies the human request as requiring personal library
+  membership, completion is rejected before the generator can approve it.
+  The actual failing trace was replayed against this check with live H2O and
+  rejected, and a regression test covers it. The entire personal-collection
+  workflow was not rerun after this last guard. It remains unsupported as a
+  dependable feature; the guard is not a universal ownership verifier.
+
+  These text-only models and OCR cannot reliably interpret every application,
+  icon, modal dialog or hidden state. Ordinary music playback, native app
+  launch and folder operations are substantially more reliable than arbitrary
+  UI workflows. The agent is a working prototype, not unattended general
+  desktop automation with a correctness guarantee.
+
+IMPLEMENTATION CHANGES DRIVEN BY THE TRIALS
+  - Stationary pointer-grab surface and stable keyboard focus during a drag.
+    Transferring keyboard focus at a monitor boundary had cancelled open-chat
+    drags; eight failing trials became eight successful reruns.
+  - Companion increased from 48 to 60 pixels, retaining 31 separated dots.
+  - Real H2O routing over installed apps, Qwen tool planning, native execution,
+    postcondition observations, cancellation and English response normalization.
+  - App identity derived from process information as well as window class;
+    repeated unverified launches suppressed; spawned apps detached from bridge.
+  - Semantic control IDs and matching labels; separate Xwayland XTEST and
+    Wayland input transports; correct handling of new same-process dialogs.
+  - Actual Xwayland keyboard-target check, stable geometry waits, fitting of
+    oversized dialogs, and restoration of temporarily maximized main windows.
+  - OCR large-line rereading, high-contrast pass and raw TSV quote handling.
+  - Double-click activation and rejection of identical, unchanged OCR clicks.
+  - Recursive folder search, incomplete-search reporting and native media APIs.
+  - Second assessment of uncertain routine actions, independent outcome review,
+    and explicit rejection of observed public/personal scope contradictions.
+
+INTERFACE VERIFICATION
+  Final closed-chat and corrected open-chat runs: 16/16 drag trials passed,
+  with 640 sampled moves across both monitors. Maximum sampled position error
+  was 0 px and no grab was cancelled. These are application-coordinate samples,
+  not high-speed camera frame measurements or proof at every display refresh.
+  Earlier failed/calibration trials remain in the private evidence directory.
+
+  Final live UI: 6/6 checks passed — normally collapsed, actual UI→model→UI
+  response, native wheel scrolling, app survival after bridge exit, cancellation
+  and collapse after work. Cancellation reached idle in approximately 65 ms.
+  The earlier five-check UI run also passed. Only the ten generated UI-test
+  messages were removed afterwards; the 44 pre-existing messages were retained.
+
+  23 unit/regression checks passed, including focus changes, stale controls,
+  label mismatch, unknown tools, parallel-call rejection, duplicate launch,
+  model unavailability, Xwayland transport, dialog targeting and scope checks.
+  Particle geometry checks passed at 48 and 60 px; the conservative continuous
+  minimum gap at 60 px is 1.72 px. Python compilation, shell syntax, native
+  pointer-helper compilation and the live QML startup also passed.
+
+MEASUREMENTS AND PROFILE
+  Current machine: two RTX 3090 24 GB GPUs, i5-14400F, 32 GB RAM, Hyprland,
+  Quickshell 0.3.2, two 1920×1080 monitors at scale 1.
+  H2O-Lightning is resident on GPU0; HyperQwen/Qwen3.8-27B on GPU1.
+  HyperQwen uses full-vocabulary MTP, BF16 KV, a 3 GiB KV pool, a 16,384-token
+  context, prefix caching and PIECEWISE graphs from the existing local lab.
+  No new tokens/second benchmark is claimed here; these are desktop task tests.
+
+  The last representative core run measured approximately 0.90 s for a simple
+  app focus, 5.95 s for folder discovery, 5.71 s for folder creation, 7.66 s for
+  opening a folder, 7.95 s for playback, 19.00 s for the full calculator task,
+  1.02 s for a short answer, and 11.95 s for create→open→list. These are single
+  representative requests, including verification; not general speed promises.
+
+  The full-02 resource probe collected 287 samples over 868.6 seconds.
+  Available RAM stayed at or above 11.95 GiB. GPU peak allocations were 10,361
+  and 19,754 MiB; peak temperatures were 66 and 77 °C. Hyprland cursor-IPC
+  latency was 7.432 ms median, 7.549 ms p95, 7.633 ms maximum. This IPC measure
+  is NOT FPS or frame time. Later extended trials were not resource-sampled.
+  Both model services reported zero service swap at the recorded inspection;
+  this does not mean the entire machine had no pre-existing swapped pages.
+
+OPERATIONAL STATE
+  Planet is running with only the companion visible. Music tests ran muted;
+  playback was paused before restoring the original volume. Test files remain
+  under output/live-fixtures/ for inspection. Pending Save dialogs belonging
+  to the test-launched Writer process were cancelled after the trials.
+
+  The stalled EXL3 homelab profile and previous balanced H2O profile were stopped
+  to run the resident pair. Their files and enablement were preserved. The new
+  pair is transient and has no reboot autostart. See README.txt before switching
+  profiles or rebooting. Existing model weights are external to this repository.
+
+EVIDENCE
+  acceptance-summary.json: aggregate counts and per-category wall times.
+  acceptance-cases.csv: all task IDs, categories, outcomes and timings.
+  oracle-corrections.json: correction of the false-positive playlist oracle.
+  collection-scope-check.json: actual failing trace rejected by the final guard.
+  interface-checks.json: native pointer and UI results.
+  resources.json: resource-probe aggregates.
+
+  Private prompts, UI contents, filenames, media metadata, screenshots and model
+  traces remain in ignored output/acceptance/ and .planet-runs/. They are not
+  included in the Git commit. The committed OCR fixture is only a calculator
+  window containing a synthetic arithmetic test.

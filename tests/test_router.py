@@ -86,6 +86,14 @@ class ControllerTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'not verified'):
             c.confirm_completion('Opened your liked collection.','Liked Songs')
 
+    def test_public_scope_contradiction_cannot_be_overruled_by_generator(self):
+        c=self.controller();c.confirm_completion=Controller.confirm_completion.__get__(c)
+        c.trace=[{'kind':'tool','name':'observe','arguments':{},'result':{'elements':[{'text':'Public Playlist'},{'text':'Liked Songs'}]}}]
+        c.call=Mock(return_value=tool('assess_outcome',supported=True,reason='A matching name.'))
+        with patch('scripts.bridge.decision',return_value=('personal',1)), self.assertRaisesRegex(ValueError,'Public Playlist'):
+            c.confirm_completion('Opened your personal collection.','Liked Songs')
+        c.call.assert_not_called()
+
     def test_parallel_calls_do_not_execute(self):
         c = self.controller()
         multiple = tool('launch', app_id='different.desktop')
