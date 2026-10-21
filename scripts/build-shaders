@@ -3,4 +3,6 @@ set -euo pipefail
 root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 mkdir -p "$root/.build"
 qsb="${QSB:-/usr/lib/qt6/bin/qsb}"
-"$qsb" --glsl '100 es,120,150' --hlsl 50 --msl 12 -o "$root/.build/edge.frag.qsb" "$root/app/edge.frag"
+for shader in "$root"/app/*.frag; do
+  "$qsb" --glsl '100 es,120,150' --hlsl 50 --msl 12 -o "$root/.build/$(basename "$shader").qsb" "$shader"
+done

@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import json
-from desktop import hypr
+import subprocess
+def hypr(query):
+    return json.loads(subprocess.check_output(["hyprctl", "-j", query], text=True, timeout=2))
 try:
     window=hypr('activewindow')
     monitors=hypr('monitors')

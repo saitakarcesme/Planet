@@ -1,3 +1,8 @@
+PROJECT PAUSED — 2026-10-21
+  Latest source checkpoint; unfinished liquid-glass UI work is not fully validated.
+  See reports/PAUSED-2026-10-21.txt before resuming. Earlier setup and validation
+  notes below describe the previous installed environment, now removed locally.
+
 Planet — local desktop action assistant
 
 CURRENT TARGET

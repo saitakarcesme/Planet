@@ -4,9 +4,12 @@ PLANET_ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 export PLANET_ROOT
 case "${1:-start}" in
   start|toggle)
-    if [[ ! -f "$PLANET_ROOT/.build/edge.frag.qsb" || "$PLANET_ROOT/app/edge.frag" -nt "$PLANET_ROOT/.build/edge.frag.qsb" ]]; then
-      bash "$PLANET_ROOT/scripts/build-shaders"
-    fi
+    for shader in "$PLANET_ROOT"/app/*.frag; do
+      if [[ ! -f "$PLANET_ROOT/.build/$(basename "$shader").qsb" || "$shader" -nt "$PLANET_ROOT/.build/$(basename "$shader").qsb" ]]; then
+        bash "$PLANET_ROOT/scripts/build-shaders"
+        break
+      fi
+    done
     if [[ ! -x "$PLANET_ROOT/.build/planet-pointer" || "$PLANET_ROOT/scripts/pointer.c" -nt "$PLANET_ROOT/.build/planet-pointer" ]]; then
       "$PLANET_ROOT/scripts/build-pointer"
     fi ;;

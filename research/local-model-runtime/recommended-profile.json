@@ -1,0 +1,8 @@
+{
+  "spec": "mtp",
+  "vocab": "0",
+  "prefix": "1",
+  "kv_mib": 3072,
+  "max_context": 16384,
+  "int8_activations": false
+}

@@ -1,0 +1,20 @@
+Planet paused checkpoint — 2026-10-21
+
+The user requested a GitHub backup of the latest state and removal of the
+local project. This checkpoint preserves unfinished work; it is not a release.
+
+Pending UI: rounded dark optical glass, native-window backdrop capture,
+refraction shader, screen-edge bloom, animated transitions and vector controls.
+Two-monitor centering and calculation-result checks passed in the prior live
+run. That run timed out at /skills. Subsequent focus/readiness edits have not
+completed live validation. Long-run rendering/capture stability is unverified.
+The short earlier frame-loop sample is not a display presentation guarantee.
+
+Latest unit run: 83 tests, 82 passed, one error in
+test_examples_cannot_execute_without_model: its single-object JSON parser
+received multiple event lines. No fix was attempted after the pause request.
+The last local runtime status reported a model-controller startup failure.
+
+Native app/model integration from earlier commits remains preserved.
+Local model runtime source is archived under research/local-model-runtime.
+Private UI/model traces and live benchmark fixtures were not uploaded.

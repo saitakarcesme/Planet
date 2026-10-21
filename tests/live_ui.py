@@ -46,13 +46,14 @@ def main():
             record('shortcut-registered',any(b['modmask']==72 and b['key'].upper()=='P' and b.get('description')=='Planet' for b in binds),note='Compositor registration checked; virtual wtype events do not trigger global bindings on this session.')
             for monitor in monitors:
                 pointer(monitor['x']+monitor['width']/monitor['scale']/2,monitor['y']+monitor['height']/monitor['scale']/2)
-                ipc('toggle');wait(lambda:state()['opened']);time.sleep(.35)
+                ipc('toggle');wait(lambda:state()['opened']);time.sleep(.7)
                 p=panel();c=p['card']
-                record('centered-on-'+monitor['name'],p['screen']==monitor['name'] and c['width']==min(720,p['width']-64) and c['height']==62 and abs(c['x']+c['width']/2-p['width']/2)<=1 and abs(c['y']+c['height']/2-p['height']/2)<=1 and c['visible'] and p['glow']==1)
+                record('centered-on-'+monitor['name'],p['screen']==monitor['name'] and c['width']==min(720,p['width']-64) and c['height']==68 and c['radius']==34 and c['ready'] and abs(c['x']+c['width']/2-p['width']/2)<=1 and abs(c['y']+c['height']/2-p['height']/2)<=1 and c['visible'] and p['glow']==1)
                 ipc('capture',str(out/('panel-'+monitor['name']+'.png')))
                 key('-k','Escape');wait(lambda:not state()['opened'])
-            ipc('toggle');wait(lambda:state()['opened']);time.sleep(.2)
+            ipc('toggle');wait(lambda:panel()['card']['inputReady']);time.sleep(.2)
             key('Calculate 17 * 23');key('-k','Return');wait(lambda:state()['phase']=='success' and not state()['busy'])
+            wait(lambda:state()['opened']);time.sleep(.4)
             ipc('capture',str(out/'result.png'));time.sleep(.2)
             c=panel()['card']
             subprocess.run(['magick',str(out/'result.png'),'-crop',f"{int(c['width'])}x{int(c['height'])}+{int(c['x'])}+{int(c['y'])}",'+repage','-background','#202020','-alpha','remove','-negate','-resize','200%',str(out/'result-ocr.png')],check=True)
@@ -60,7 +61,9 @@ def main():
             record('typed-command-returns-answer','391' in text and state()['output']==3 and state()['history']==0)
             key('Calculate 2 + 3');key('-k','Return');wait(lambda:not state()['busy'] and state()['output']==1)
             record('result-replaces-previous',state()['history']==0 and state()['output']==1)
+            wait(lambda:panel()['card']['inputReady'])
             key('/skills');key('-k','Return');wait(lambda:not state()['busy'] and state()['output']>1000)
+            time.sleep(.4)
             p=panel();c=p['card'];m=next(m for m in monitors if m['name']==p['screen'])
             pointer(m['x']+c['x']+c['width']/2,m['y']+c['y']+c['height']-60,'scroll 6\nwait 100\n')
             time.sleep(.2);after=panel()['card']
@@ -68,10 +71,18 @@ def main():
             # Read-only long model response, cancelled through the same UI Stop handler.
             ipc('submit','Write an English essay of 1000 words about mechanical clocks.')
             wait(lambda:state()['busy']);time.sleep(.3);start=time.monotonic();ipc('cancel');wait(lambda:not state()['busy'],5)
-            record('cancel-running-model',state()['opened'] and state()['phase']=='error' and state()['output']>0,cancel_to_idle_s=round(time.monotonic()-start,3))
+            wait(lambda:state()['opened'])
+            record('cancel-running-model',state()['phase']=='error' and state()['output']>0,cancel_to_idle_s=round(time.monotonic()-start,3))
             # Existing Spotify window: focus only, no playback or account mutation.
-            ipc('submit','Open Spotify');wait(lambda:not state()['busy'] and not state()['opened'],10);time.sleep(.3)
+            ipc('submit','Open Spotify');wait(lambda:not state()['busy'] and not state()['opened'],10);time.sleep(.5)
             record('action-closes-silently',state()['output']==0 and state()['history']==0 and state()['glow']==0)
+            wait(lambda:all(not p['card']['ready'] and p['card']['captures']==0 for p in json.loads(ipc('inspect'))))
+            before=json.loads(ipc('performance'))['frames'];time.sleep(.3)
+            record('hidden-releases-capture-and-animation',before==json.loads(ipc('performance'))['frames'])
+            for _ in range(12):
+                ipc('toggle');ipc('close')
+            time.sleep(.7)
+            record('rapid-open-close-does-not-reopen',not state()['opened'] and all(not p['card']['visible'] and not p['card']['ready'] for p in json.loads(ipc('inspect'))))
         finally:
             if state()['busy']:ipc('cancel');wait(lambda:not state()['busy'],5)
             ipc('close');ipc('clear')

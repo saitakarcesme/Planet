@@ -1,0 +1,33 @@
+#!/usr/bin/env python3
+"""Start/stop only this lab's resident pair; never evict another model automatically."""
+import argparse,json,pathlib,socket,subprocess,sys,fcntl
+ROOT=pathlib.Path(__file__).resolve().parent;H2O=pathlib.Path('/home/isa/Projects/h2o-lightning-local')
+UNITS=['petlab-active','h2ol-petlab-gpu0','petlab-router']
+p=argparse.ArgumentParser();p.add_argument('command',choices=['start','stop','status']);a=p.parse_args()
+lock=(ROOT/'.control.lock').open('w');fcntl.flock(lock,fcntl.LOCK_EX)
+def active(unit):return subprocess.run(['systemctl','--user','is-active','--quiet',unit]).returncode==0
+def stop():
+ for unit in reversed(UNITS):
+  if active(unit):subprocess.run(['systemctl','--user','stop',unit],check=True)
+def status():print(json.dumps({'owned_active_units':[u for u in UNITS if active(u)],'router':'http://127.0.0.1:8749/v1/route','qwen':'http://127.0.0.1:18020/v1/chat/completions','h2o':'http://127.0.0.1:8741/v1/systemone','autostart':False},indent=2))
+if a.command=='status':status();raise SystemExit
+if a.command=='stop':stop();status();raise SystemExit
+if any(active(u) for u in UNITS):raise SystemExit('Owned service already active; inspect status before changing modes.')
+for port in [8741,18020,8749]:
+ with socket.socket() as s:
+  if s.connect_ex(('127.0.0.1',port))==0:raise SystemExit(f'Port {port} occupied. No existing service was stopped.')
+mem={k:int(v.split()[0]) for k,v in (line.split(':',1) for line in pathlib.Path('/proc/meminfo').read_text().splitlines())}
+if mem['MemAvailable']<16*1024**2:raise SystemExit('Resident-pair startup requires 16 GiB available host RAM. No application was stopped.')
+gpu={int(i):int(v) for i,v in (line.split(',') for line in subprocess.check_output(['nvidia-smi','--query-gpu=index,memory.free','--format=csv,noheader,nounits'],text=True).splitlines())}
+if gpu[0]<10500 or gpu[1]<21000:raise SystemExit('Need 10,500/21,000 MiB free on GPUs 0/1. No model was evicted.')
+cfg=json.loads((ROOT/'recommended-profile.json').read_text())
+command=[sys.executable,str(ROOT/'scripts/start_profile.py'),'active','--spec',cfg['spec'],'--vocab',cfg['vocab'],'--prefix',cfg['prefix'],'--kv',str(cfg['kv_mib']),'--ctx',str(cfg['max_context'])]
+if cfg.get('int8_activations'):command.append('--int8')
+try:
+ subprocess.run(command,check=True)
+ subprocess.run([sys.executable,str(H2O/'scripts/start-compact.py'),'--name','petlab-gpu0','--gpus','0','--tp','1','--util','.40','--port','8741'],check=True)
+ subprocess.run([sys.executable,str(H2O/'scripts/ready-compact.py'),'petlab-gpu0','8741'],check=True)
+ subprocess.run(['systemd-run','--user','--unit=petlab-router','--collect','-p','MemoryMax=128M','-p','MemorySwapMax=0',sys.executable,str(ROOT/'scripts/decision_router.py')],check=True)
+ status()
+except BaseException:
+ stop();raise
