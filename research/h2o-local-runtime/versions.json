@@ -1,0 +1,10 @@
+{
+  "model": "h2oai/h2o-lightning-4b",
+  "tag": "v1.3.1",
+  "revision": "e5c86b7564de9574fc48e759c226e50819d079ec",
+  "runtime": "vllm==0.30.0+cu129",
+  "precision": "bfloat16; head_dtype float32 as shipped",
+  "context": 2048,
+  "hardware": "2x RTX3090 24GB; no NVLink; PHB",
+  "scope": "text typed decisions, hand-authored candidates; no text generation or real account actions"
+}

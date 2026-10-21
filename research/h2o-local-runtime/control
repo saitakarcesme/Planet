@@ -1,0 +1,45 @@
+#!/usr/bin/env python3
+"""Local H2O typed decision service; transient user units, no boot enablement."""
+import argparse,pathlib,subprocess,json,urllib.request,time,sys,fcntl
+ROOT=pathlib.Path(__file__).resolve().parent
+UNITS=['h2ol-balanced','h2ol-single','h2ol-replica1','h2ol-replica0','h2ol-router-live']
+p=argparse.ArgumentParser();p.add_argument('command',choices=['start','stop','status']);p.add_argument('mode',nargs='?',choices=['balanced','single','replicas'],default='balanced');a=p.parse_args()
+lock=open(ROOT/'.control.lock','w');fcntl.flock(lock,fcntl.LOCK_EX)
+def active(unit):return subprocess.run(['systemctl','--user','is-active','--quiet',unit],stdout=subprocess.DEVNULL).returncode==0
+def stop():
+ for u in reversed(UNITS):
+  if active(u):subprocess.run(['systemctl','--user','stop',u],check=True)
+def status():
+ live=[u for u in UNITS if active(u)];print(json.dumps({'active_units':live,'url':'http://127.0.0.1:8741/v1/systemone','autostart':False},indent=2))
+ if live:
+  try:
+   with urllib.request.urlopen('http://127.0.0.1:8741/health',timeout=4) as r:print(json.dumps(json.load(r),ensure_ascii=False,indent=2))
+  except Exception as e:print('Health:',e)
+if a.command=='stop':stop();status();raise SystemExit
+if a.command=='status':status();raise SystemExit
+if any(active(u) for u in UNITS):print('Already running. To change mode, run ./control stop first.');status();raise SystemExit
+mem={k:int(v.split()[0]) for k,v in (l.split(':',1) for l in pathlib.Path('/proc/meminfo').read_text().splitlines())};required={'single':8,'balanced':11,'replicas':12}[a.mode]*1024**2
+if mem['MemAvailable']<required:raise SystemExit('Not enough available RAM for conservative startup; existing applications were left running.')
+gpus={int(i):int(f) for i,f in (line.split(',') for line in subprocess.check_output(['nvidia-smi','--query-gpu=index,memory.free','--format=csv,noheader,nounits'],text=True).strip().splitlines())}
+need={'single':{1:10000},'balanced':{0:6500,1:6500},'replicas':{0:10600,1:10000}}[a.mode]
+if any(gpus.get(i,0)<mb for i,mb in need.items()):raise SystemExit(f'Not enough free VRAM. Required MiB: {need}; available: {gpus}. Existing models were left running.')
+import socket
+for port in ([8741,8742,8743] if a.mode=='replicas' else [8741]):
+ with socket.socket() as s:
+  if s.connect_ex(('127.0.0.1',port))==0:raise SystemExit(f'Port {port} is already occupied; no process was stopped.')
+def start(name,gpus,tp,util,port):
+ subprocess.run([sys.executable,str(ROOT/'scripts/start-compact.py'),'--name',name,'--gpus',gpus,'--tp',tp,'--util',util,'--port',port],check=True)
+ subprocess.run([sys.executable,str(ROOT/'scripts/ready-compact.py'),name,port],check=True)
+try:
+ if a.mode=='single':start('single','1','1','.40','8741')
+ elif a.mode=='balanced':start('balanced','0,1','2','.28','8741')
+ else:
+  start('replica1','1','1','.40','8742');start('replica0','0','1','.38','8743')
+  subprocess.run(['systemd-run','--user','--unit=h2ol-router-live','--collect','-p','MemoryMax=128M','-p','MemorySwapMax=0','-p','Nice=10','-p','TimeoutStopSec=5',str(ROOT/'.venv/bin/python'),str(ROOT/'scripts/router.py')],check=True)
+  for _ in range(30):
+   try:urllib.request.urlopen('http://127.0.0.1:8741/health',timeout=2);break
+   except Exception:time.sleep(.2)
+  else:raise RuntimeError('router not ready')
+ status()
+except BaseException:
+ stop();raise

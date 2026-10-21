@@ -16,5 +16,6 @@ received multiple event lines. No fix was attempted after the pause request.
 The last local runtime status reported a model-controller startup failure.
 
 Native app/model integration from earlier commits remains preserved.
-Local model runtime source is archived under research/local-model-runtime.
+Local model runtime source is archived under research/local-model-runtime
+and research/h2o-local-runtime; downloaded weights are not included.
 Private UI/model traces and live benchmark fixtures were not uploaded.
